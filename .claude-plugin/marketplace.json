@@ -1,5 +1,6 @@
 {
   "name": "seny-ai",
+  "description": "Seny: common-sense, spec-driven development for Claude Code. Research, plan, implement and review with the right amount of process for each change.",
   "owner": {
     "name": "Marc"
   },
@@ -7,7 +8,7 @@
     {
       "name": "seny",
       "source": "./",
-      "description": "Seny-driven development for Claude Code."
+      "description": "Spec-driven RPI workflow: proportional tracks, small stories with TDD where it matters, a checks baseline for old code, an independent read-only reviewer, and a human gate for every done."
     }
   ]
 }
