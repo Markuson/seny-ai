@@ -39,12 +39,13 @@ Seny-driven development is the grandmother in the room. Understand first. Decide
 ## The cycle
 
 ```
- research ──▶ plan ──▶ implement ──▶ review ──▶ done ✅
-                           ▲            │
-                           └─ "nope" ───┘
+ research ──▶ plan ──▶ implement ──▶ review ──▶ you say "done" ✅
+     │          ▲          ▲            │
+     ▼          │          └─ "nope" ───┘
+   spike ───────┘   (only when a question needs code to answer)
 ```
 
-Every phase ends in a document you review before the next one starts. The documents carry the state, not the chat, so you can `/clear` between phases, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
+`/seny:implement` calls the independent reviewer on its own and fixes the blockers once (you can switch that off). Every phase ends in a document you review before the next one starts. The documents carry the state, not the chat, so you can `/clear` between phases, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
 
 ### A story's life
 
@@ -66,9 +67,10 @@ Seny's whole personality is *"how much is enough"*, so it has a command for exac
 |---|---|---|
 | 🟢 **Direct** | A typo, a config value. Not a bug. | Nothing. Just ask Claude. Seny approves. |
 | 🔧 **Fix** | A bug outside any plan | `/seny:fix` |
-| 🪶 **Light** | One clear change, 1–3 stories | `/seny:plan light` → implement → review |
-| 🧱 **Feature** | Several stories, open questions, new UI, or risk | `/seny:research` → plan → implement → review |
-| 🌱 **Evolve** | Change *how* the app is built, not *what* it does | `/seny:evolve` → implement → review |
+| 🧪 **Spike** | "Can this library / device / API even do X?" | `/seny:spike` → then the right track |
+| 🪶 **Light** | One clear change, 1–3 stories | `/seny:plan light` → implement |
+| 🧱 **Feature** | Several stories, open questions, new UI, or risk | `/seny:research` → plan → implement |
+| 🌱 **Evolve** | Change *how* the app is built, not *what* it does | `/seny:evolve` → implement |
 | 🏗️ **Project** | A new app, or adopting Seny in an old one | `/seny:init` → research project → plan project |
 
 Some things always bump you up a track: data model changes, auth, payments, personal data, new external services, new screens, undecided requirements, untested legacy code, and anything you can't undo. Rauxa is welcome at the party. Not near the database.
@@ -84,11 +86,13 @@ Some things always bump you up a track: data model changes, auth, payments, pers
 | `/seny:research project` | Existing app: maps the architecture and design system as they are, records which checks **already** fail, finds untested and fragile areas. |
 | `/seny:research project refresh` | "Do the docs still match the code?" Honest answers only. |
 | `/seny:research <feature>` | Understands one feature against the code and the project docs. |
+| `/seny:spike <question>` | Answers one technical question with throwaway code on a `spike/` branch, and writes the findings into the feature research. The only place where code is allowed to be ugly. |
 | `/seny:plan project` | Greenfield: architecture, design system, roadmap and a `foundation` feature. Brownfield: a roadmap. |
-| `/seny:plan <slug> [design]` | Epics and small stories with statuses, plus a design doc when there's UI. |
+| `/seny:plan <slug> [design]` | Epics and small stories with statuses, an `Approach` and a `Verify` line each, plus a design doc when there's UI. |
+| `/seny:plan <slug> <change>` | Changes a plan without rewriting history: stories already started stay as they are. |
 | `/seny:plan light <change>` | A tiny plan for a tiny change. |
-| `/seny:implement <id> \| next` | One story. Red-green-refactor where there's logic. Stops at review. |
-| `/seny:review [id]` | A separate reviewer agent checks the story. You decide if it's done. |
+| `/seny:implement <id> \| next [no-review]` | One story. Red-green-refactor where there's logic, checks against the baseline, then the independent reviewer (one round of fixes if needed). Stops for your "done". |
+| `/seny:review [id] [done]` | Reviews again (after manual changes, or in manual mode), or closes an approved story. You decide if it's done. |
 | `/seny:fix <bug>` | Failing test first, root cause, minimal fix, review. No duct tape. |
 | `/seny:evolve <change>` | Improve the architecture of living code, step by step, without breaking it. |
 | `/seny:help [what I want]` | Where am I? What next? How much process does this deserve? |
@@ -125,8 +129,7 @@ Some promises are too important to leave to good intentions, so Seny ships a sma
 /seny:init
 /seny:research project a habit tracker for families, iOS and Android
 /seny:plan project        # architecture, design system, roadmap, foundation
-/seny:implement next
-/seny:review
+/seny:implement next     # builds, checks and gets reviewed
 ```
 
 `foundation` is always the first feature: a running, deployed, boringly solid base with nothing product-specific. Like the *pinya* of a human tower: nobody photographs it, but nothing stands without it.
@@ -142,7 +145,7 @@ Some promises are too important to leave to good intentions, so Seny ships a sma
 
 Three things make old code survivable:
 
-- **The baseline.** Seny records which checks already fail before you touch anything. From then on, only **new** failures block you. You're responsible for what you break, not for what 2019-you broke.
+- **The baseline.** Seny records which checks already fail before you touch anything. From then on, only **new** failures block you. You're responsible for what you break, not for what 2019-you broke. When other people's work comes in (a pull, a merge, a rebase), Seny notices and records a fresh baseline before your next story, so you never get blamed for a teammate's red test either.
 - **Characterization tests.** Before changing code that has no tests, Seny pins down what it does today. Then it changes it. If the behaviour moves, you'll know.
 - **Evolutions, not rewrites.** `/seny:evolve` migrates architecture in small, working steps (strangler fig, expand-contract, adapters, feature flags, folder by folder). While an area is *in transition*, new code must use the new pattern, and the reviewer enforces it. Big-bang rewrites are pure rauxa. Seny says no.
 
@@ -155,12 +158,14 @@ Working in a client repo where you can't add files? `/seny:init` can keep everyt
 ```
 docs/
   project/                 # the whole app: lives as long as the app
-    research.md            # product research, or codebase analysis + baseline
+    product.md             # new app: vision, users, MVP
+    codebase.md            # existing code: conventions, coverage, debt, fragile areas
+    baseline.md            # which checks already failed, and at which commit
     architecture.md        # stack, structure, data, decisions, transitions
     design-system.md       # tokens, typography, base components
     roadmap.md             # features and evolutions, in order
   features/<slug>/         # one feature: builds on project/, never repeats it
-    research.md
+    research.md            # plus spike findings, if any
     plan.md                # epics and stories with statuses
     design.md              # only when there's UI
 ```
@@ -172,7 +177,9 @@ docs/
 Spec-driven methods can get *hungry*. Seny is on a diet:
 
 - **Proportional tracks.** Most changes never touch research. Bugs go straight to `/seny:fix`. Typos go nowhere at all.
-- **Short documents.** Research is one page. Plans are lists of small stories, not novels.
+- **Short documents.** Research is one page. Plans are lists of small stories, not novels. The baseline is one table.
+- **Plans that remember the how.** Every story carries its `Approach`, so implementing it in a fresh session doesn't mean exploring the code all over again.
+- **Your stack only when it matters.** Your stack choices live in `~/.claude/seny/stack.md`, read only when a new app is planned, not in every session.
 - **Loaded on demand.** Skills and templates enter the context only when you call them. The design template sleeps until you design something.
 - **No persona theatre.** No simulated meeting between a PM, an architect and a scrum master agreeing with each other. One model, one job per phase.
 - **Docs instead of chat history.** State lives in files, so `/clear` is free and long sessions don't drag a novel of context around.
@@ -200,7 +207,7 @@ Spec-driven methods can get *hungry*. Seny is on a diet:
 | | 🧘 Seny | 🏛️ Big agentic frameworks | 🎲 Vibe coding |
 |---|---|---|---|
 | Process | Proportional to the change | Can scale to full planning suites | "We'll see" |
-| Size | 8 skills, 1 agent, 1 hook | Many modules, agents and roles | One prompt and a prayer |
+| Size | 9 skills, 1 agent, 1 hook | Many modules, agents and roles | One prompt and a prayer |
 | Tokens | On a diet | Hungry | Unpredictable |
 | Old codebases | Baseline, characterization tests, evolutions | Varies | 🔥 |
 | Review | Independent agent + you | Built in | You, at 2 a.m., in production |
@@ -225,7 +232,7 @@ Never. Seny commits only if you said so, asks if you didn't, and pushing is alwa
 Yes: that's the Direct track. Seny isn't against speed. It's against regret.
 
 **What if I'm feeling a bit of rauxa?**
-Healthy. Use it to brainstorm in `/seny:research`. Just don't let it write the migration.
+Healthy. Point it at a `/seny:spike`: throwaway code, a time box, and a branch nobody merges. Just don't let it write the migration.
 
 ---
 

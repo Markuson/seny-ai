@@ -63,14 +63,47 @@ echo "package.json: $pkg · lockfiles:${locks:- none}"
 project=$(ls "$root/project" 2>/dev/null | tr '\n' ' ')
 echo "Project docs: ${project:-none}"
 
-# Baseline: where and when it was recorded
-if [ -f "$root/project/baseline.md" ]; then
-  echo "Baseline: $root/project/baseline.md — $(grep -m1 -iE '^(Recorded|Date|Analysed)' "$root/project/baseline.md" 2>/dev/null)"
-elif [ -f "$root/project/research.md" ] && grep -q '^## Baseline' "$root/project/research.md" 2>/dev/null; then
-  echo "Baseline: $root/project/research.md — $(grep -m1 '^## Baseline' "$root/project/research.md" | sed 's/^## //')"
+# Baseline: is it still the right reference?
+# Current when it is in this branch's history and every commit since then is yours
+# (your stories already passed the checks against it). Stale when it was recorded on
+# another line of history, or other people's work came in since (a pull, merge or rebase).
+bfile="$root/project/baseline.md"
+if [ -f "$bfile" ]; then
+  bline=$(grep -m1 -E '^Recorded:' "$bfile")
+  bsha=$(printf '%s' "$bline" | sed -nE 's/.*Commit:[[:space:]]*`?([0-9a-f]{4,40})`?.*/\1/p')
+  bdate=$(printf '%s' "$bline" | sed -nE 's/^Recorded:[[:space:]]*([0-9-]+).*/\1/p')
+  status="recorded ${bdate:-on an unknown date}"
+  if [ -n "$top" ] && [ -n "$bsha" ]; then
+    if ! git cat-file -e "$bsha^{commit}" 2>/dev/null; then
+      status="STALE ($status at $bsha, a commit this repo doesn't have): re-record before changing code"
+    elif ! git merge-base --is-ancestor "$bsha" HEAD 2>/dev/null; then
+      status="STALE ($status at $bsha, on another line of history): re-record before changing code"
+    else
+      me=$(git config user.email)
+      since=$(git rev-list --count "$bsha..HEAD" 2>/dev/null)
+      others=$(git log --format='%ae' "$bsha..HEAD" 2>/dev/null | grep -cvxF "${me:-<nobody>}")
+      if [ "${others:-0}" -gt 0 ]; then
+        status="STALE ($status at $bsha; $others of the $since commits since then are other people's work): re-record before changing code"
+      else
+        status="current ($status at $bsha, $since own commits since)"
+      fi
+    fi
+  elif [ -z "$bsha" ]; then
+    status="$status (no Commit: line, can't tell if it is current)"
+  fi
+  echo "Baseline: $status"
 else
-  echo "Baseline: none recorded"
+  echo "Baseline: none"
 fi
+
+# Review mode: "Seny review: auto | manual" in the project rules (default auto)
+mode=""
+for f in CLAUDE.md CLAUDE.local.md "$root/CLAUDE.md"; do
+  [ -f "$f" ] || continue
+  mode=$(sed -nE 's/^[-* ]*Seny review:[[:space:]]*`?(auto|manual)`?.*/\1/p' "$f" | head -n1)
+  [ -n "$mode" ] && break
+done
+echo "Review mode: ${mode:-auto}"
 
 # Roadmap: only what is not done
 if [ -f "$root/project/roadmap.md" ]; then

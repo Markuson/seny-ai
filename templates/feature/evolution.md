@@ -41,7 +41,7 @@ Recommendation: <option and why>
 
 ## plan.md specifics (evolution)
 
-Use the feature plan format with:
+Use the feature plan format (`templates/feature/plan.md`) with:
 - `Type: evolution` under the title.
 - E1 starts with **characterization tests** for the areas that will change (skip only where coverage is already good).
 - Every story leaves the app working and the checks no worse than the baseline.

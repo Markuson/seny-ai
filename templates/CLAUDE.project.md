@@ -30,25 +30,10 @@ Project-specific rules. Personal defaults (language, git, stack, TypeScript, tes
 
 ## Seny
 - Seny docs: `docs`
-- `<docs>/project/` — app-wide: `research.md` (product, or codebase analysis and checks baseline), `architecture.md`, `design-system.md`, `roadmap.md`. Read `architecture.md` before changing structure, state or boundaries, and `design-system.md` before any UI work.
-- `<docs>/features/<slug>/` — one feature: `research.md`, `plan.md`, `design.md` when it has UI. Feature docs build on the project docs and never repeat them.
-
-| Phase     | Command                                   | Result                                              |
-|-----------|-------------------------------------------|-----------------------------------------------------|
-| Setup     | `/seny:init`                              | this file and the docs folders                      |
-| Research  | `/seny:research project [refresh] \| <feature>` | project or feature `research.md`              |
-| Plan      | `/seny:plan project \| <slug> [design] \| light <change>` | project docs, or feature `plan.md` / `design.md` |
-| Implement | `/seny:implement <id> \| next`            | code; story → `review`                              |
-| Review    | `/seny:review [id]`                       | story → `done` (I approve) or back to `in-progress` |
-| Fix       | `/seny:fix <bug>`                         | failing test → root cause → minimal fix → review    |
-| Evolve    | `/seny:evolve <change>`                   | options → incremental migration plan → transition in `architecture.md` |
-| Help      | `/seny:help [what I want]`                | where I am, the right track and the next command    |
-
-- The plan is the source of truth for a feature; `architecture.md` and `design-system.md` for the app. If reality contradicts them, stop and propose a change.
-- App-wide changes go to the project docs only after I approve them.
-- Statuses: `todo`, `in-progress`, `review`, `done`. Only I move a story to `done`.
-- Only new check failures block; the baseline lists the ones that were already there.
-- Changing untested code starts with characterization tests.
+- Seny review: auto
+- `<docs>/project/` is app-wide: `product.md`, `codebase.md`, `baseline.md`, `architecture.md`, `design-system.md`, `roadmap.md`. Read `architecture.md` before changing structure, state or boundaries, and `design-system.md` before UI work.
+- `<docs>/features/<slug>/` is one feature: `research.md`, `plan.md`, `design.md`. The plan is the source of truth; if reality contradicts it, stop and propose a change.
+- Story statuses: `todo` → `in-progress` → `review` → `done`. Only I move a story to `done`. One story = one commit.
+- Only new check failures block: `baseline.md` lists the old ones. Untested code gets characterization tests before it changes.
 - Areas **In transition** in `architecture.md`: new code uses the target pattern, never the old one.
-- One story = one commit, made when the story is `done`.
-- Start a new phase with `/clear` when the context is heavy. The docs carry the state, not the chat.
+- App-wide doc changes only after my yes. Not sure what's next: `/seny:help`.
