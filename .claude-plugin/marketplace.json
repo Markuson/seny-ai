@@ -1,0 +1,13 @@
+{
+  "name": "seny-ai",
+  "owner": {
+    "name": "Marc"
+  },
+  "plugins": [
+    {
+      "name": "seny",
+      "source": "./",
+      "description": "Seny-driven development for Claude Code."
+    }
+  ]
+}

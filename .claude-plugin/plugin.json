@@ -1,0 +1,13 @@
+{
+  "name": "seny",
+  "displayName": "Seny",
+  "description": "Seny-driven development: research, plan, implement and review with the right amount of process for each change. Agile stories, TDD where it matters, an independent reviewer and a human gate.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Marc"
+  },
+  "homepage": "https://github.com/Markuson/seny-ai",
+  "repository": "https://github.com/Markuson/seny-ai",
+  "license": "MIT",
+  "keywords": ["workflow", "research-plan-implement", "agile", "tdd", "code-review", "react", "react-native"]
+}
