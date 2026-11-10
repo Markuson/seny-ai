@@ -2,6 +2,23 @@
 
 All notable changes to Seny. Versions follow [semver](https://semver.org/): while Seny is `0.x`, minor versions may change commands or document formats.
 
+## [0.4.0] — 2026-11-10
+
+Documentation: everything Seny does, explained, with a real example.
+
+### Added
+- `guide/concepts.md`: tracks, documents, the anatomy of a story, statuses, the baseline (with a worked example), characterization tests, reviews, spikes, evolutions, design, shared and private mode, the state snapshot, context hygiene and a glossary.
+- `guide/commands.md`: every command with what it reads, writes, asks and stops on.
+- `guide/configuration.md`: personal rules, stack defaults, project rules, review mode, commits, permissions, the safety hook, private mode, monorepos, companion skills, several machines.
+- `guide/faq.md`: frequent questions and troubleshooting.
+- `examples/poc-a-poc/`: a small app halfway through its second feature, with every document Seny writes and stories in every status.
+
+### Changed
+- README rewritten: clearer title and pronunciation, statuses table, install and update, links to the guide and the example.
+- `/seny:implement` resumes an `in-progress` story that has neither notes nor findings by reading the diff.
+- `/seny:plan` Change mode can remove `todo` stories.
+- Design skill name corrected to `vercel-react-native-skills`.
+
 ## [0.3.0] — 2026-11-10
 
 The RPI loop gets tighter: plans carry the how, review runs on its own, and rauxa gets a sandbox.

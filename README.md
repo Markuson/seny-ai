@@ -1,16 +1,18 @@
-# Welcome to the Seny-Driven Development.
+# Seny — common-sense, spec-driven development for Claude Code
 
 > *Fast is fine. Accurate is better. Seny is both, with fewer tokens.*
 
-**Seny** is a spec-driven development method for [Claude Code](https://claude.com/claude-code), based on the **Research → Plan → Implement** (RPI) flow, with a review step added because nobody should mark their own homework.
+Welcome! **Seny** is a small, opinionated way of building software with [Claude Code](https://claude.com/claude-code). It follows the **Research → Plan → Implement** (RPI) flow, adds an independent review because nobody should mark their own homework, and keeps a human in charge of every "done".
 
 It works for shiny **greenfield** projects and for that **brownfield** repo you wrote in 2019, before AI, before tests, and possibly before sleep. And it does spec-driven development without turning every one-line fix into a 40-page PRD that eats your token budget for breakfast.
+
+📚 **New here?** Read this page, then [the concepts](guide/concepts.md). Looking for one command? [The command reference](guide/commands.md). Want to see the documents Seny writes? [A full example project](examples/poc-a-poc/).
 
 ---
 
 ## So… what is *seny*?
 
-> **seny** /sɛɲ/
+> **seny** /sɛɲ/ — like *"sen"* followed by the *"ny"* in *canyon*.
 
 *Seny* is a very Catalan idea: level-headed common sense. Knowing how much is enough. It's the voice of your Catalan grandmother saying *"poc a poc"* (little by little) while you try to refactor the whole app on a Friday afternoon.
 
@@ -22,13 +24,13 @@ AI coding today is mostly rauxa:
 prompt → accept → prompt → accept → "why is everything on fire?" → prompt
 ```
 
-Seny-driven development is the grandmother in the room. Understand first. Decide. Build in small steps. Let someone else check. Then, and only then, call it done.
+Seny-driven development is the grandmother in the room. Understand first. Decide. Build in small steps. Let someone else check. Then, and only then, call it done. (Rauxa still gets a playground: it's called a [spike](#how-much-process-ask-senyhelp).)
 
 ---
 
 ## What Seny tries to be
 
-- **Spec-driven, not spec-obsessed.** Research and plans live in Markdown files you can read in two minutes, not in a cathedral of documents nobody opens twice.
+- **Spec-driven, not spec-obsessed.** Research and plans live in short Markdown files you can read in two minutes, not in a cathedral of documents nobody opens twice.
 - **Proportional.** A typo doesn't need a research phase. A new payments flow does. Seny picks the smallest process that is still safe.
 - **Good for new and old code.** Greenfield gets an architecture, a design system, a roadmap and a solid foundation. Brownfield gets mapped first, *as it is*, so you can add features and improve it without breaking it.
 - **Cheap on tokens.** See [The token diet](#the-token-diet). Your wallet will send a thank-you card.
@@ -45,7 +47,13 @@ Seny-driven development is the grandmother in the room. Understand first. Decide
    spike ───────┘   (only when a question needs code to answer)
 ```
 
-`/seny:implement` calls the independent reviewer on its own and fixes the blockers once (you can switch that off). Every phase ends in a document you review before the next one starts. The documents carry the state, not the chat, so you can `/clear` between phases, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
+1. **Research** understands the problem and the code. It never proposes solutions.
+2. **Plan** decides and slices the work into small stories, each with acceptance criteria, an `Approach` (how to build it) and a `Verify` line (how to prove it works).
+3. **Implement** builds one story: characterization tests first if the code is untested, red-green-refactor where there's logic, then the project's checks against the baseline.
+4. **Review** is done by a separate reviewer agent that never saw the conversation. By default `/seny:implement` calls it on its own and fixes the blockers once.
+5. **You** check it by hand and say "done". Seny commits (if you want) and moves on.
+
+Every phase ends in a document you review before the next one starts. The documents carry the state, not the chat, so you can `/clear` between phases, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
 
 ### A story's life
 
@@ -54,6 +62,13 @@ todo ──▶ in-progress ──▶ review ──▶ done ──▶ commit
               ▲             │
               └─ changes ───┘
 ```
+
+| Status | Set by | Means |
+|---|---|---|
+| `todo` | `/seny:plan` | Planned, not started |
+| `in-progress` | `/seny:implement`, or a review asking for changes | Being built or fixed |
+| `review` | `/seny:implement` when the checks pass | Built and checked, waiting for the reviewer and for you |
+| `done` | **Only you** (through `/seny:review` or the review step of `/seny:implement`) | Approved and checked by hand |
 
 Stories are small: one commit, a handful of files, works end to end. If a story needs a second coffee to review, it's two stories.
 
@@ -73,7 +88,7 @@ Seny's whole personality is *"how much is enough"*, so it has a command for exac
 | 🌱 **Evolve** | Change *how* the app is built, not *what* it does | `/seny:evolve` → implement |
 | 🏗️ **Project** | A new app, or adopting Seny in an old one | `/seny:init` → research project → plan project |
 
-Some things always bump you up a track: data model changes, auth, payments, personal data, new external services, new screens, undecided requirements, untested legacy code, and anything you can't undo. Rauxa is welcome at the party. Not near the database.
+Some things always bump you up to at least **Feature**: data model changes, auth, payments, personal data, new external services, new screens, undecided requirements, untested legacy code, and anything you can't undo. Rauxa is welcome at the party. Not near the database.
 
 ---
 
@@ -82,42 +97,39 @@ Some things always bump you up a track: data model changes, auth, payments, pers
 | Command | What it does |
 |---|---|
 | `/seny:init` | Sets Seny up in a project. Detects your stack, commands and repo conventions. Overwrites nothing. Ever. |
-| `/seny:research project <idea>` | New app: vision, users, MVP, constraints. |
-| `/seny:research project` | Existing app: maps the architecture and design system as they are, records which checks **already** fail, finds untested and fragile areas. |
+| `/seny:research project <idea>` | New app: vision, users, MVP, constraints → `product.md`. |
+| `/seny:research project` | Existing app: maps the architecture, design system and codebase as they are, and records which checks **already** fail (the baseline). |
 | `/seny:research project refresh` | "Do the docs still match the code?" Honest answers only. |
 | `/seny:research <feature>` | Understands one feature against the code and the project docs. |
 | `/seny:spike <question>` | Answers one technical question with throwaway code on a `spike/` branch, and writes the findings into the feature research. The only place where code is allowed to be ugly. |
-| `/seny:plan project` | Greenfield: architecture, design system, roadmap and a `foundation` feature. Brownfield: a roadmap. |
-| `/seny:plan <slug> [design]` | Epics and small stories with statuses, an `Approach` and a `Verify` line each, plus a design doc when there's UI. |
+| `/seny:plan project` | New app: architecture, design system, roadmap and a `foundation` feature. Existing app: a roadmap. |
+| `/seny:plan <slug> [design]` | Epics and small stories, each with an `Approach` and a `Verify` line, plus a design doc when there's UI. |
 | `/seny:plan <slug> <change>` | Changes a plan without rewriting history: stories already started stay as they are. |
 | `/seny:plan light <change>` | A tiny plan for a tiny change. |
-| `/seny:implement <id> \| next [no-review]` | One story. Red-green-refactor where there's logic, checks against the baseline, then the independent reviewer (one round of fixes if needed). Stops for your "done". |
-| `/seny:review [id] [done]` | Reviews again (after manual changes, or in manual mode), or closes an approved story. You decide if it's done. |
+| `/seny:implement <id> \| next [no-review]` | One story: builds it, checks it against the baseline, gets it reviewed (one round of fixes if needed), and stops for your "done". |
+| `/seny:review [id] [done]` | Reviews again (after manual changes, or in manual mode), or closes an approved story. |
 | `/seny:fix <bug>` | Failing test first, root cause, minimal fix, review. No duct tape. |
-| `/seny:evolve <change>` | Improve the architecture of living code, step by step, without breaking it. |
+| `/seny:evolve <change>` | Improves the architecture of living code, step by step, without breaking it. |
 | `/seny:help [what I want]` | Where am I? What next? How much process does this deserve? |
+
+Every command, with what it reads, writes, asks and stops on: [guide/commands.md](guide/commands.md).
 
 ---
 
 ## Install
+
+You need Claude Code with plugin support, and `git`. Then, inside Claude Code:
 
 ```
 /plugin marketplace add Markuson/seny-ai
 /plugin install seny@seny-ai
 ```
 
-Install it for yourself (every project) or for a project (shared through the repo's `.claude/settings.json`).
+Restart Claude Code so the safety hook loads. Install it for yourself (every project) or for one project (shared through the repo's `.claude/settings.json`).
 
----
+Hacking on Seny itself? Point the marketplace at your local clone instead: `/plugin marketplace add ~/path/to/seny-ai`. After pulling changes, `/plugin marketplace update seny-ai`.
 
-## Safety rails
-
-Some promises are too important to leave to good intentions, so Seny ships a small hook (`hooks/hooks.json` → `scripts/guard.sh`) that checks every command before it runs:
-
-- **No pushes. Ever.** Any `git push`, from Claude or from any subagent, is blocked with a friendly note. The branch is ready; you push it. If you really want Claude to push in a session, start Claude Code with `SENY_ALLOW_PUSH=1`.
-- **The reviewer can't touch your code.** The `seny:reviewer` agent can't use the file-editing tools, and Bash commands that could change files (`rm`, `mv`, `sed -i`, `git checkout`, `git stash`, installs, redirections to files…) are blocked. It reads, runs the checks, and reports. That's it.
-
-`/seny:init` also offers to add your project's check commands (lint, typecheck, test, build) to `.claude/settings.local.json`, so they run without a permission prompt. Only checks: never dev servers, deploys or installs.
+Recommended once, for every project: your personal rules in `~/.claude/CLAUDE.md` and your stack for new apps in `~/.claude/seny/stack.md`. Both have ready-made templates. See [guide/configuration.md](guide/configuration.md).
 
 ---
 
@@ -129,7 +141,7 @@ Some promises are too important to leave to good intentions, so Seny ships a sma
 /seny:init
 /seny:research project a habit tracker for families, iOS and Android
 /seny:plan project        # architecture, design system, roadmap, foundation
-/seny:implement next     # builds, checks and gets reviewed
+/seny:implement next      # builds, checks and gets reviewed; you say "done"
 ```
 
 `foundation` is always the first feature: a running, deployed, boringly solid base with nothing product-specific. Like the *pinya* of a human tower: nobody photographs it, but nothing stands without it.
@@ -156,7 +168,7 @@ Working in a client repo where you can't add files? `/seny:init` can keep everyt
 ## Where things live
 
 ```
-docs/
+docs/                      # or .seny/ in private mode
   project/                 # the whole app: lives as long as the app
     product.md             # new app: vision, users, MVP
     codebase.md            # existing code: conventions, coverage, debt, fragile areas
@@ -164,11 +176,24 @@ docs/
     architecture.md        # stack, structure, data, decisions, transitions
     design-system.md       # tokens, typography, base components
     roadmap.md             # features and evolutions, in order
-  features/<slug>/         # one feature: builds on project/, never repeats it
+  features/<slug>/         # one feature (or evolution): builds on project/, never repeats it
     research.md            # plus spike findings, if any
     plan.md                # epics and stories with statuses
     design.md              # only when there's UI
 ```
+
+Want to see them filled in? [examples/poc-a-poc](examples/poc-a-poc/) is a small app halfway through its second feature.
+
+---
+
+## Safety rails
+
+Some promises are too important to leave to good intentions, so Seny ships a small hook (`hooks/hooks.json` → `scripts/guard.sh`) that checks every command before it runs:
+
+- **No pushes. Ever.** Any `git push`, from Claude or from any subagent, is blocked with a friendly note. The branch is ready; you push it. If you really want Claude to push in a session, start Claude Code with `SENY_ALLOW_PUSH=1`.
+- **The reviewer can't touch your code.** The `seny:reviewer` agent can't use the file-editing tools, and Bash commands that could change files (`rm`, `mv`, `sed -i`, `git checkout`, `git stash`, installs, redirections to files…) are blocked. It reads, runs the checks, and reports. That's it.
+
+`/seny:init` also offers to add your project's check commands (lint, typecheck, test, build) to `.claude/settings.local.json`, so they run without a permission prompt. Only checks: never dev servers, deploys or installs.
 
 ---
 
@@ -179,13 +204,13 @@ Spec-driven methods can get *hungry*. Seny is on a diet:
 - **Proportional tracks.** Most changes never touch research. Bugs go straight to `/seny:fix`. Typos go nowhere at all.
 - **Short documents.** Research is one page. Plans are lists of small stories, not novels. The baseline is one table.
 - **Plans that remember the how.** Every story carries its `Approach`, so implementing it in a fresh session doesn't mean exploring the code all over again.
+- **Loaded on demand.** Skills and templates enter the context only when you call them, one template per document. The design template sleeps until you design something.
 - **Your stack only when it matters.** Your stack choices live in `~/.claude/seny/stack.md`, read only when a new app is planned, not in every session.
-- **Loaded on demand.** Skills and templates enter the context only when you call them. The design template sleeps until you design something.
 - **No persona theatre.** No simulated meeting between a PM, an architect and a scrum master agreeing with each other. One model, one job per phase.
 - **Docs instead of chat history.** State lives in files, so `/clear` is free and long sessions don't drag a novel of context around.
+- **State that stays small.** Every command starts with a snapshot of the project, and finished work collapses into one line. Feature number 40 costs the same as feature number 2.
 - **Explore subagents for big sweeps.** They read the haystack and return only the needle.
 - **Read only what the story needs.** Not the whole repo "just in case".
-- **State that stays small.** Every command starts with a snapshot of the project, and finished work collapses into one line. Feature number 40 costs the same as feature number 2.
 
 ---
 
@@ -213,26 +238,41 @@ Spec-driven methods can get *hungry*. Seny is on a diet:
 | Review | Independent agent + you | Built in | You, at 2 a.m., in production |
 | Best for | Solo devs and small teams shipping web and mobile apps | Large initiatives and teams wanting a shared standard | Weekend experiments |
 
-Seny is deliberately small. If you need autonomous multi-story runs or formal requirements for a big team, a bigger framework will serve you better, and that's fine. Seny would be the first to tell you.
+Seny is deliberately small. If you need autonomous multi-story runs or formal requirements for a big team, a bigger framework will serve you better, and that's fine. Seny would be the first to tell you. They also get along: any brief, PRD or brainstorming file can be the input of `/seny:research`.
 
 ---
 
-## FAQ
+## Learn more
+
+| Guide | Read it when |
+|---|---|
+| [Concepts](guide/concepts.md) | You want to understand how Seny thinks: tracks, documents, stories, baseline, reviews, spikes, evolutions |
+| [Commands](guide/commands.md) | You want to know exactly what a command reads, writes, asks and leaves behind |
+| [Configuration](guide/configuration.md) | You're setting Seny up: personal rules, stack, permissions, review mode, private mode, companion skills |
+| [FAQ and troubleshooting](guide/faq.md) | Something surprised you, or you're about to ask "can I…?" |
+| [Example project](examples/poc-a-poc/) | You learn best by looking at real documents |
+| [Changelog](CHANGELOG.md) | You want to know what changed |
+
+---
+
+## FAQ (the short version)
 
 **Is it pronounced "seenie"?**
-Close, but no. *Señ*, like "canyon" without the "on". Your Catalan friends will be impressed.
+Close, but no. *Sen* + the *ny* of *canyon*. Your Catalan friends will be impressed.
 
 **Does Seny work with my stack?**
-The method is stack-agnostic. The author's own defaults (TypeScript, pnpm, React Native + Expo, Astro, Next.js, Tailwind/NativeWind, TanStack Query + Zustand, Hono + Drizzle + Better Auth, Vitest, Playwright, Maestro) live in [`templates/CLAUDE.personal.example.md`](templates/CLAUDE.personal.example.md) as an example. Steal what you like.
+The method is stack-agnostic: commands come from your project rules, conventions from your `CLAUDE.md` files. The author's own defaults (TypeScript, pnpm, React Native + Expo, Astro, Next.js, Tailwind/NativeWind, TanStack Query + Zustand, Hono + Drizzle + Better Auth, Vitest, Playwright, Maestro) live in [`templates/stack.example.md`](templates/stack.example.md). Steal what you like.
 
 **Will Seny push to my repo?**
-Never. Seny commits only if you said so, asks if you didn't, and pushing is always your call. A hook blocks `git push` outright, so this isn't a promise, it's a rule. Grandmother rules.
+Never. Seny commits only if you said so, asks if you didn't, and a hook blocks `git push` outright, so this isn't a promise, it's a rule. Grandmother rules.
 
 **Can I skip the process when I'm in a hurry?**
 Yes: that's the Direct track. Seny isn't against speed. It's against regret.
 
 **What if I'm feeling a bit of rauxa?**
 Healthy. Point it at a `/seny:spike`: throwaway code, a time box, and a branch nobody merges. Just don't let it write the migration.
+
+More in [guide/faq.md](guide/faq.md).
 
 ---
 

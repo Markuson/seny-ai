@@ -29,6 +29,7 @@ Target: $ARGUMENTS
    - `todo` → start it.
    - `in-progress` with open review findings → a fix round: the open findings come first.
    - `in-progress` with `Notes:` → resume from the notes.
+   - `in-progress` with neither (a session that ended abruptly) → read the diff to see what is already done, tell me, and continue.
    - `review` → tell me: `/seny:review <story id>` (or `/seny:review <story id> done` if it was approved and I only need to close it). Stop.
    - `done` → tell me and stop.
    - A dependency not `done` → warn me and wait.
@@ -41,7 +42,7 @@ Target: $ARGUMENTS
    - The story's `Approach:`, `Files:` and `Verify:` lines: they are your starting map. Read the code they point to, not the whole repo.
    - `<docs>/project/architecture.md`, if it exists: follow its structure, state, boundaries and conventions. If the story needs something that contradicts it, stop and tell me. If it touches an area listed under **In transition**, follow its rule for new code: use the target pattern, never add more of the old one.
    - `Type: evolution`: behaviour must not change unless the story says so. The characterization tests must pass unchanged; if one needs editing, stop and ask me why.
-   - UI stories: `<docs>/project/design-system.md` and the section the `Design:` line points to: tokens (no hard-coded colours or sizes), base components, every listed state. If a design skill is installed (`frontend-design`, `react-native-skills`), load it.
+   - UI stories: `<docs>/project/design-system.md` and the section the `Design:` line points to: tokens (no hard-coded colours or sizes), base components, every listed state. If a design skill is installed (`frontend-design`, `vercel-react-native-skills`), load it.
    - `<docs>/project/baseline.md`, if any: the checks that already failed.
 6. **Characterization first.** If the story changes existing code that has no tests, first write tests that pin its current behaviour and run them green. Then change it.
 7. **Implement**, following the story's `Tests` mode:

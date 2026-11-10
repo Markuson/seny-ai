@@ -46,7 +46,7 @@ Requires `<docs>/project/product.md` (new app) or `<docs>/project/codebase.md` (
 4. Write `<docs>/features/foundation/plan.md` (`Research: ../../project/product.md`). Foundation leaves the base running and deployed with nothing product-specific: scaffold, strict types, lint/typecheck/test wired, the theme from the design system, base layout or navigation, CI if wanted, a deploy of a placeholder screen. Its last story records `<docs>/project/baseline.md` with every check green (`By: foundation`).
 5. Give me the architecture in 5 lines, the roadmap, the foundation stories, and the 2–3 decisions you are least sure about.
 6. If the product has UI, ask whether to write the design system now. Without UI, set `Design system: not applicable (no UI)` in `architecture.md`. If I say no, set `Design system: declined on <YYYY-MM-DD>`, so nobody asks again. On yes:
-   1. Load the design skills that match the stack, if installed: `frontend-design` (web direction), `web-design-guidelines` (web a11y/UX), `react-native-skills` (React Native / Expo). If none is installed, continue and tell me which would help.
+   1. Load the design skills that match the stack, if installed: `frontend-design` (web direction), `web-design-guidelines` (web a11y/UX), `vercel-react-native-skills` (React Native / Expo). If none is installed, continue and tell me which would help.
    2. Give me two visual directions in 3 lines each and a recommendation, and wait for my choice. Use any references from `product.md`.
    3. Write `<docs>/project/design-system.md` and set `Design system: design-system.md` in `architecture.md`.
    4. Make sure foundation has stories to put the tokens in the theme and build the base components.
@@ -62,7 +62,7 @@ For a clear requirement, a few files, no new screens to design, and no change to
 ## Change mode (the plan exists and something changed)
 1. Read the plan, its `research.md` and `design.md` if they exist, and the project docs the change touches.
 2. If the change needs new understanding (new data model, auth, external service, new screens, open requirements), say so and suggest `/seny:research <slug>` to update the research first.
-3. Update `plan.md`: add, split, reorder or edit stories, and the Scope, Architecture changes and Key decisions the change touches. Stories that are not `todo` are history: never change their status, criteria, review notes or ticks. If the change affects one of them, add a new story instead and say why.
+3. Update `plan.md`: add, split, reorder, edit or remove `todo` stories, and the Scope, Architecture changes and Key decisions the change touches. Stories that are not `todo` are history: never change their status, criteria, review notes or ticks. If the change affects one of them, add a new story instead and say why.
 4. Stop. Give me what changed (stories added, edited, removed or reordered), any new open question, and the next story: `/seny:implement next`.
 
 ## Feature mode
