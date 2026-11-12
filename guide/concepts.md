@@ -72,6 +72,8 @@ Every roadmap row has a size, and the size decides how much planning the epic ge
 | **M** | 4–8 | `/seny:research <slug>`, then `/seny:plan <slug>`: one pass each, one or two rounds of questions. |
 | **L** | more than 8 | Research, then the plan in **two passes**: first its *shape* (goal, scope, decisions, one line per story), then the stories in full. Seny will usually suggest splitting it instead. |
 
+A size-S plan doesn't re-read the whole product document: it reads its roadmap row, its epic notes, and only the sections they point to.
+
 Plus `/seny:plan <slug> design` for any epic with UI. If a plan turns out bigger or smaller than its size, Seny says so and proposes resizing the row or splitting the epic.
 
 ---
@@ -85,7 +87,7 @@ Not every change deserves the full cycle. Seny's tracks go from "just do it" to 
 | **Direct** | Fix a typo, change a copy text, bump a patch version | Nothing from Seny. Claude just does it. | none |
 | **Fix** | "The cart crashes when it's empty" | A failing test that reproduces the bug, the root cause, a minimal fix, an independent review | `/seny:fix` |
 | **Spike** | "Can `react-native-ble-plx` reconnect in the background on Android?" | A time-boxed experiment on a throwaway branch and written findings | `/seny:spike` |
-| **Light** | "Add a 'sort by date' option to the list" (outside the roadmap) | A tiny plan (1–3 stories), then the normal implement and review loop | `/seny:plan light` |
+| **Light** | "Add a 'sort by date' option to the list" (outside the roadmap) | A tiny plan (`Type: light`, 1–3 stories, no roadmap row), then the normal implement and review loop | `/seny:plan light` |
 | **Epic** | "Families can share habits" | A roadmap row with a size: plan only (S), or research and plan (M, L), plus a design doc if there's UI | `/seny:plan <slug>`, or `/seny:research` → `/seny:plan` |
 | **Evolve** | "Move server state from Redux to TanStack Query" | Options, a migration strategy, small stories that keep the app working | `/seny:evolve` |
 | **Project** | A new app, or adopting Seny in an existing repo | Product or codebase research, architecture, design system, roadmap, the foundation plan, one document at a time | `/seny:init`, `/seny:research project`, `/seny:plan project` |
@@ -117,6 +119,9 @@ interview ──▶ draft ──▶ "review <file>" ──▶ changes? ──yes
 - **The interview is real.** Questions come in rounds of up to five, grouped by topic, each with Seny's recommended answer (as multiple choice when the options are known), so you can answer fast or write your own. It stops when what's still unknown wouldn't change the document.
 - **The depth follows the weight.** `product.md` and `architecture.md` for a new app get as many rounds as they need: everything builds on them. A size-S epic plan gets one round or none. Existing-code documents only ask what the code can't answer.
 - **Every document has a status**: `Status: draft` until you approve it, then `Status: approved (2026-11-12)`. Nothing builds on a draft: if `product.md` isn't approved, `/seny:plan project` stops and says so. A plan in its shape pass says `shape approved`.
+- **Answers are saved as you go.** After each round they're written into the draft, so a session that dies mid-interview resumes where it stopped.
+- **Documents stay small.** Each has a size budget (about 120 lines for `product.md`, one page for an epic's research, 15 lines per story). A document holds decisions and what they rest on; raw material (inventories, content to migrate, pasted briefs, what an old version does) goes to `docs/project/inputs/`, linked from the line that needs it and read only then.
+- **Epic documents live on the epic's branch.** Project documents are written on the default branch; the first document of an epic creates its branch (after asking).
 - **A self-check runs before you see it**: observable criteria, a `Verify` on every story, valid dependencies, an explicit Scope Out, nothing restating `architecture.md`. Your review goes to what matters.
 - **Approval ends the run**: Seny proposes a commit for the document and tells you the next command. `/clear` before it: the next document starts with a clean context and reads this one from disk.
 
@@ -147,7 +152,8 @@ For a new app the whole planning sequence looks like this, one run (and one revi
 | `baseline.md` | Which checks already failed, with commands and the commit | research (existing code), the last foundation story, implement and fix when it's stale | implement, fix, reviewer |
 | `architecture.md` | Stack, structure, data and state, data model, boundaries, conventions, areas **In transition**, key decisions | plan project, research (existing code); updated after your yes | everyone who writes code |
 | `design-system.md` | Direction, tokens, typography, spacing, motion, base components, accessibility rules | plan project (new apps), research (existing UI) | design, implement, reviewer |
-| `roadmap.md` | Epics and evolutions in order, each with a type, size, goal, dependencies and status | plan project, plan, evolve, review | help |
+| `roadmap.md` | Epics and evolutions in order, each with a type, size, goal, dependencies and status, plus up to three lines of **epic notes** each (decisions already taken, pointers to detail) | plan project, plan, evolve, review | help, and every epic's plan |
+| `inputs/` | Reference material kept out of the documents: inventories, briefs, content. No status, never loaded by default | research, plan | whoever follows a link to it |
 
 ### Epic documents (`docs/epics/<slug>/`)
 
@@ -301,7 +307,7 @@ Each finding has a severity:
 | `should` | Worth fixing now, but you decide | Listed for you; fixed only if you say so |
 | `nit` | Taste | Mentioned in chat, not recorded |
 
-**Automatic or manual.** With the default review mode (`auto`), `/seny:implement` launches the reviewer as soon as the checks pass. If there are blockers, it fixes them once (a failing test first when it's a bug) and asks for a second review. Then it stops and shows you the result. In `manual` mode, implement stops at `review` and you run `/seny:review` yourself. Either way, only you say `done`. How to switch: [configuration](configuration.md#review-mode).
+**Automatic or manual.** With the default review mode (`auto`), `/seny:implement` launches the reviewer as soon as the checks pass. If there are blockers, it fixes them once (a failing test first when it's a bug) and asks for a **re-review**: a cheaper second look that only verifies the findings and the files the fixes touched. Then it stops and shows you the result. In `manual` mode, implement stops at `review` and you run `/seny:review` yourself. Either way, only you say `done`. How to switch: [configuration](configuration.md#review-mode).
 
 **The learning loop.** If the reviewer finds the same kind of problem in two stories, Seny proposes one new rule for your project's `CLAUDE.md` that would have prevented both. The method gets a little smarter every time it catches something twice.
 
@@ -333,7 +339,7 @@ Then `/seny:plan` decides with facts instead of hopes. "We don't know yet, becau
 
 An **evolution** changes *how* the app is built without changing *what* it does: a framework or SDK upgrade, JavaScript to TypeScript, unifying two fetch patterns, swapping a library, restructuring folders.
 
-`/seny:evolve` measures the current footprint, reads the official migration guides for upgrades, gives you 2–3 options (including "do nothing for now" when it's real), and plans the one you choose as small stories:
+`/seny:evolve` measures the current footprint, reads the official migration guides for upgrades, and writes a research document with 2–3 options (including "do nothing for now" when it's real). Approving it means choosing one. A second run plans the chosen option as small stories:
 
 1. **Characterization tests first** for the areas that will change.
 2. **Measurable slices**, each with a `Progress:` line ("migrate the cart module · 3/11 modules"). Every slice leaves the app working.
@@ -394,8 +400,8 @@ Project docs: product.md (approved) architecture.md (approved) design-system.md 
 Baseline: current (recorded 2026-10-30 at 3f9c2e1, 4 own commits since)
 Review mode: auto
 Roadmap: 1 done
-  | 2 | streaks | epic | M | Show and keep streaks per habit, with gentle reminders | foundation | `in-progress` |
-  | 3 | family-sharing | epic | M | Invite codes, kid profiles and shared habits | streaks | `todo` |
+  2 streaks (epic, M) <- foundation · `in-progress`
+  3 family-sharing (epic, M) <- streaks · `todo`
 Open epics:
   streaks (M): 1/4 done · 1 review · 1 in-progress · 1 todo · research.md (approved) plan.md (approved) design.md (approved)
 Done epics (1): foundation
@@ -444,4 +450,6 @@ Long sessions get expensive and forgetful. Seny's habits:
 | **Expand-contract** | Migration for data and APIs: add the new shape, move readers and writers, remove the old shape. |
 | **Blocker / should / nit** | Review severities: must fix, worth fixing, taste. |
 | **Review mode** | `auto` (implement calls the reviewer) or `manual` (you run `/seny:review`). |
+| **Epic notes** | Up to three lines per epic in the roadmap: decisions already taken and pointers to detail, so small plans read little. |
+| **Inputs** | `docs/project/inputs/`: reference material kept out of the documents and read only on demand. |
 | **Docs root** | Where Seny's documents live: `docs/` (shared) or `.seny/` (private). |

@@ -31,7 +31,7 @@ Project-specific rules. Personal defaults (language, git, stack, TypeScript, tes
 ## Seny
 - Seny docs: `docs`
 - Seny review: auto
-- `<docs>/project/` is app-wide: `product.md`, `codebase.md`, `baseline.md`, `architecture.md`, `design-system.md`, `roadmap.md`. Read `architecture.md` before changing structure, state or boundaries, and `design-system.md` before UI work.
+- `<docs>/project/` is app-wide: `product.md`, `codebase.md`, `baseline.md`, `architecture.md`, `design-system.md`, `roadmap.md`. `inputs/` holds reference material: read a file there only when a document points to it. Read `architecture.md` before changing structure, state or boundaries, and `design-system.md` before UI work.
 - `<docs>/epics/<slug>/` is one epic (a roadmap row: one branch, one PR): `plan.md`, plus `research.md` and `design.md` when its size or UI needs them. The plan is the source of truth; if reality contradicts it, stop and propose a change.
 - Documents are `draft` until I approve them; nothing builds on a draft. One document per run, `/clear` between them.
 - Story statuses: `todo` → `in-progress` → `review` → `done`. Only I move a story to `done`. One story = one commit = one session.

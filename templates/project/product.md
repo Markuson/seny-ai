@@ -29,6 +29,7 @@ Source: <the idea in chat | brief file path | BMAD PRD path>
 
 ## References
 - <similar product or site> — <what to take from it>
+- <`inputs/<name>.md`> — <reference material kept out of this document: inventories, briefs, content, what an old version does>
 
 ## Risks
 

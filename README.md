@@ -201,7 +201,8 @@ docs/                      # or .seny/ in private mode
     baseline.md            # which checks already failed, and at which commit
     architecture.md        # stack, structure, data, decisions, transitions
     design-system.md       # tokens, typography, base components
-    roadmap.md             # epics and evolutions, in order, each with a size
+    roadmap.md             # epics and evolutions, in order, each with a size and a few notes
+    inputs/                # reference material: read only when a document points to it
   epics/<slug>/            # one epic (or evolution): builds on project/, never repeats it
     research.md            # sizes M and L; plus spike findings, if any
     plan.md                # a flat list of stories with statuses
@@ -216,7 +217,7 @@ Want to see them filled in? [examples/poc-a-poc](examples/poc-a-poc/) is a small
 
 Some promises are too important to leave to good intentions, so Seny ships a small hook (`hooks/hooks.json` → `scripts/guard.sh`) that checks every command before it runs:
 
-- **No pushes. Ever.** Any `git push`, from Claude or from any subagent, is blocked with a friendly note. The branch is ready; you push it. If you really want Claude to push in a session, start Claude Code with `SENY_ALLOW_PUSH=1`.
+- **No pushes. Ever.** Any `git push` (and `gh pr create`, which pushes behind your back), from Claude or from any subagent, is blocked with a friendly note. The branch is ready; you push it. If you really want Claude to push in a session, start Claude Code with `SENY_ALLOW_PUSH=1`.
 - **The reviewer can't touch your code.** The `seny:reviewer` agent can't use the file-editing tools, and Bash commands that could change files (`rm`, `mv`, `sed -i`, `git checkout`, `git stash`, installs, redirections to files…) are blocked. It reads, runs the checks, and reports. That's it.
 
 `/seny:init` also offers to add your project's check commands (lint, typecheck, test, build) to `.claude/settings.local.json`, so they run without a permission prompt. Only checks: never dev servers, deploys or installs.
@@ -228,7 +229,7 @@ Some promises are too important to leave to good intentions, so Seny ships a sma
 Spec-driven methods can get *hungry*. Seny is on a diet:
 
 - **Proportional tracks and sizes.** Most changes never touch research. Size-S epics get one short document. Bugs go straight to `/seny:fix`. Typos go nowhere at all.
-- **Short documents.** Research is one page. Plans are flat lists of small stories that point to `architecture.md` instead of repeating it. The baseline is one table.
+- **Short documents, with a budget.** Research is one page. Plans are flat lists of small stories that point to `architecture.md` instead of repeating it. Raw material lives in `inputs/` and is read only on demand. Small epics read their roadmap notes, not the whole product document.
 - **Plans that remember the how.** Every story carries its `Approach`, so implementing it in a fresh session doesn't mean exploring the code all over again.
 - **Loaded on demand.** Skills and templates enter the context only when you call them, one template per document. The design template sleeps until you design something.
 - **Your stack only when it matters.** Your stack choices live in `~/.claude/seny/stack.md`, read only when a new app is planned, not in every session.

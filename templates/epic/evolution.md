@@ -26,6 +26,7 @@ Kind: <upgrade | migration | unify pattern | library swap | restructure>
 | A | <...> | <strangler fig | expand-contract | adapter | feature flag | folder by folder | in place> | S/M/L | low/med/high | yes/partly/no |
 
 Recommendation: <option and why>
+Chosen: <option> (YYYY-MM-DD) <!-- set when I approve the research -->
 
 ## Risks
 ## Open questions

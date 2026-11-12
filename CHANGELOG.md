@@ -2,6 +2,25 @@
 
 All notable changes to Seny. Versions follow [semver](https://semver.org/): while Seny is `0.x`, minor versions may change commands or document formats.
 
+## [0.6.0] — 2026-11-12
+
+Lessons from the first real project: smaller documents, cheaper runs, tighter rails, and tests for Seny itself.
+
+### Added
+- **Size budgets** for every document, checked before hand-over, and `<docs>/project/inputs/` for reference material (inventories, briefs, content) that documents link to instead of containing.
+- **Epic notes** in the roadmap: up to three lines per epic, so a size-S plan reads its row and notes instead of the whole product document.
+- Interview answers are saved in the draft after each round; an interrupted interview resumes.
+- `tests/run.sh` (guard, state snapshot, repo lint) and a CI workflow on Linux and macOS.
+- `Type: light` for plans outside the roadmap.
+
+### Changed
+- The guard also blocks `git` called by path (`/usr/bin/git push`) and the GitHub CLI commands that push (`gh pr create`, `gh pr merge`, `gh repo sync`).
+- Branches: project documents on the default branch; an epic's first document creates the epic's branch. The default-branch warning only shows when there is epic work.
+- `/seny:evolve` takes two runs instead of three: approving the research is choosing the option.
+- The second review after a fix round is a cheaper **re-review** of the findings and the files the fixes touched.
+- The state snapshot prints compact roadmap rows (no goals).
+- Questions use the `AskUserQuestion` tool when available.
+
 ## [0.5.0] — 2026-11-12
 
 Planning gets the weight it deserves: one document at a time, epics with sizes, and the agile three levels.

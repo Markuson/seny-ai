@@ -13,6 +13,12 @@ Status: <draft | approved (YYYY-MM-DD)>
 | 2 | <slug> | epic | <S/M/L> | <one line> | foundation | `todo` |
 | 3 | <slug> | evolution | <S/M/L> | <one line> | — | `todo` |
 
+## Epic notes
+<Up to 3 lines per epic: decisions already taken about it, and pointers to where its detail lives (`product.md#section`, `inputs/<file>.md`). A size-S plan reads its row and these notes instead of the whole product document.>
+
+### <slug>
+- <decision or pointer>
+
 ## Later
 - <ideas outside the MVP>
 ```

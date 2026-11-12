@@ -31,7 +31,6 @@ if [ -n "$top" ]; then
     done
   fi
   echo "Branch: ${branch:-detached HEAD} (default: ${default:-unknown})"
-  [ -n "$branch" ] && [ "$branch" = "$default" ] && echo "Watch out: you are on the default branch."
   total=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
   if [ "$total" -gt 0 ]; then
     echo "Uncommitted changes: $total"
@@ -120,7 +119,11 @@ if [ -f "$root/project/roadmap.md" ]; then
   open=$(printf '%s\n' "$rows" | grep -v '`done`' | grep -v '^$')
   ndone=$(printf '%s\n' "$rows" | grep -c '`done`')
   echo "Roadmap: $ndone done"
-  [ -n "$open" ] && printf '%s\n' "$open" | sed 's/^/  /'
+  # Compact rows: number, slug, type, size, dependencies, status. Goals stay in the file.
+  [ -n "$open" ] && printf '%s\n' "$open" | awk -F'|' '{
+    for (i = 2; i <= NF; i++) { gsub(/^[ \t]+|[ \t]+$/, "", $i) }
+    if (NF >= 9) printf "  %s %s (%s, %s) <- %s · %s\n", $2, $3, $4, $5, $7, $8;
+    else print "  " $0 }'
 fi
 
 # Epics: one line each with size, documents and story counts; finished ones collapsed.
@@ -165,7 +168,7 @@ for d in "$root"/epics/*/; do
   [ $found -eq 0 ] && echo "Open epics:"
   found=1
   label="$slug"
-  [ -n "$size" ] && label="$label ($size${type:+, $type})"
+  if [ -n "$size" ]; then label="$label ($size${type:+, $type})"; elif [ -n "$type" ]; then label="$label ($type)"; fi
   echo "  $label: $counts ·${docs:- no documents}"
   if [ -f "$plan" ]; then
     stories=$(grep -E '^#### S[0-9]+ ' "$plan" | grep -v '`done`[[:space:]]*$' | sed -E "s/^#### /    $slug /")
@@ -173,6 +176,9 @@ for d in "$root"/epics/*/; do
   fi
 done
 [ $found -eq 0 ] && echo "Open epics: none"
+# Epic work belongs on the epic's branch; project documents are fine on the default one.
+[ $found -eq 1 ] && [ -n "$branch" ] && [ "$branch" = "$default" ] &&
+  echo "Watch out: you are on the default branch; epic documents and stories belong on the epic's branch."
 if [ $ndone -gt 0 ]; then
   if [ $ndone -le 5 ]; then echo "Done epics ($ndone):$done_names"; else echo "Done epics: $ndone"; fi
 fi

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Seny guard: a PreToolUse hook that turns two promises into rules.
-#   1. Nobody pushes. Not Claude, not a subagent. Pushing is the human's job.
+#   1. Nobody pushes (git push, gh pr create/merge, gh repo sync). Not Claude, not a
+#      subagent. Pushing is the human's job.
 #      Opt out: export SENY_ALLOW_PUSH=1 before starting Claude Code.
 #   2. The seny:reviewer agent is read-only: no file tools, no mutating commands.
 # Exit 2 blocks the tool call and shows the message to Claude. Exit 0 lets the
@@ -21,12 +22,17 @@ cmd=$(field command)
 
 # Separators that can start a new command: start, ; & | ( and whitespace.
 s='(^|[;&|(`[:space:]])'
-gitcmd="${s}git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+"
+gitcmd="${s}([^[:space:]]*/)?git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+"
+# GitHub CLI commands that push or change the remote for you.
+ghpush="${s}([^[:space:]]*/)?gh[[:space:]]+(pr[[:space:]]+(create|merge)|repo[[:space:]]+sync)([[:space:]]|$)"
 
 # 1. Never push.
 if [ "$tool" = "Bash" ] && [ "${SENY_ALLOW_PUSH:-0}" != "1" ]; then
   if printf '%s' "$cmd" | grep -qE "${gitcmd}push([[:space:]]|$)"; then
     block "git push is blocked. Seny never pushes: tell the user the branch is ready and let them push. (To allow it, the user starts Claude Code with SENY_ALLOW_PUSH=1.)"
+  fi
+  if printf '%s' "$cmd" | grep -qE "$ghpush"; then
+    block "this gh command pushes or changes the remote. Seny never pushes: give the user the PR title and body and let them open it. (To allow it, the user starts Claude Code with SENY_ALLOW_PUSH=1.)"
   fi
 fi
 
@@ -48,7 +54,8 @@ if [ "$tool" = "Bash" ]; then
   mutating="$mutating|${s}sed[[:space:]]+(-[a-zA-Z]*i|--in-place)"
   mutating="$mutating|${s}perl[[:space:]]+-[a-zA-Z]*i"
   mutating="$mutating|${gitcmd}(add|commit|checkout|switch|reset|restore|stash|clean|merge|rebase|cherry-pick|revert|apply|am|push|pull|fetch|tag|rm|mv|worktree|branch[[:space:]]+-[dDmMcC])([[:space:]]|$)"
-  mutating="$mutating|${s}git[[:space:]].*--output"
+  mutating="$mutating|${s}([^[:space:]]*/)?git[[:space:]].*--output"
+  mutating="$mutating|${s}([^[:space:]]*/)?gh[[:space:]]+(pr|repo|issue|release|api)[[:space:]]"
   mutating="$mutating|${s}(pnpm|npm|yarn|bun)[[:space:]]+(add|install|i|ci|remove|rm|uninstall|un|update|up|upgrade|link|dedupe|prune|publish)([[:space:]]|$)"
   mutating="$mutating|>"
   if printf '%s' "$clean" | grep -qE "$mutating"; then

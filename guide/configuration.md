@@ -170,7 +170,7 @@ Only allow **checks**. Never dev servers, deploys, releases, installs or E2E sui
 
 Seny ships `hooks/hooks.json`, which runs `scripts/guard.sh` before every Bash command and every file edit. It's plain bash (no `jq` or Python needed) and does two things:
 
-1. **Blocks `git push`**, from you-through-Claude or any subagent, in any form (`git push`, `git -C apps/web push --force`, `… && git push`). Claude gets a friendly explanation.
+1. **Blocks pushing**, from you-through-Claude or any subagent, in any form: `git push` (also `git -C apps/web push --force`, `/usr/bin/git push`, `… && git push`) and the GitHub CLI commands that push for you (`gh pr create`, `gh pr merge`, `gh repo sync`). Claude gets a friendly explanation and hands you the PR text instead.
    To allow pushing for one session, start Claude Code with the variable set: `SENY_ALLOW_PUSH=1 claude`.
 2. **Keeps `seny:reviewer` read-only:** no Edit or Write tools, and no Bash commands that could change files (`rm`, `mv`, `cp`, `sed -i`, redirections into files, `git checkout`/`stash`/`commit`/…, package installs). Reading, `git diff`/`log`/`show`/`blame` and running checks are fine.
 

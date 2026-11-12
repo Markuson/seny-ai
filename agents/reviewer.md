@@ -27,6 +27,9 @@ You are a senior reviewer seeing this code for the first time. You have no conte
 Run the checks the project defines and compare with `baseline.md`: a failure listed there is pre-existing and not a blocker, unless this change made it worse; any new failure is a blocker.
 Do not run E2E tests. If the project has E2E tests (Playwright, Maestro) and the change touches a user flow, propose which ones to run, or which flow deserves a new E2E test.
 
+## Re-review
+When the prompt says this is a re-review, don't start over: verify each listed finding is fixed (met / not met, with evidence), read only the files the fixes touched, run the tests and the checks that failed before, and report new problems only if the fixes introduced them. Same output format; unchanged acceptance criteria are listed as "unchanged".
+
 ## Severity
 - `blocker` — must be fixed before done: an unmet acceptance criterion, a bug, a new check failure, a security issue, a broken CLAUDE.md rule.
 - `should` — worth fixing now, but the author may decide otherwise.

@@ -24,7 +24,7 @@ Leave nits out of the plan; mention them in chat. Story ids are `S1`, `S2`… wi
 On **CHANGES REQUESTED** with fix rounds left:
 1. Fix each blocker. If it is a bug, first write a test that reproduces it and fails. Mark it `[x]`.
 2. Never fix a `should` without my yes. Never edit a characterization test to make it pass.
-3. Re-run the checks against the baseline, launch the reviewer again (step 1) and record again (step 2).
+3. Re-run the checks against the baseline, then launch the reviewer again as a **re-review** and record it (step 2). A re-review prompt adds to step 1: the findings of the previous review, word for word; that it must verify each blocker is really fixed, review only the files touched by the fixes, and run the tests plus any check that failed before, without redoing the full checklist; and that it reports new problems only if the fixes introduced them.
 
 Still CHANGES REQUESTED when no rounds are left → stop.
 

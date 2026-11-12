@@ -8,7 +8,7 @@ Format for `<docs>/epics/<slug>/plan.md`, used by epics, light changes and evolu
 Status: <draft | shape approved (YYYY-MM-DD) | approved (YYYY-MM-DD)>
 Size: <S | M | L>
 Branch: `<type>/<slug>`
-Type: <epic | evolution — omit for an epic>
+Type: <epic | evolution | light — omit for an epic>
 Research: <`research.md` | none (S) | none (light) | `../../project/product.md` (foundation)>
 
 ## Goal
@@ -60,7 +60,7 @@ Review results are appended under the story by the review loop:
 - Approach: 2–4 bullets, concrete enough that `/seny:implement` can start in a fresh session without re-exploring the code. Skip it only for trivial stories (copy, config, a one-line change).
 - Verify: the automatic part is what the reviewer checks; the manual part is what I check before saying `done`. For hardware, devices or external services, the manual part matters most.
 - Notes: absent until a story is interrupted; `/seny:implement` reads it first when it resumes and clears it when the story reaches `review`.
-- Light plans (`Research: none (light)`) keep Status, Branch, Goal, Scope and 1–3 stories; other sections only when there is something to say.
+- Light plans (`Type: light`, `Research: none (light)`) are small changes outside the roadmap: Status, Branch, Goal, Scope and 1–3 stories; other sections only when there is something to say.
 - Evolutions (`Type: evolution`) are planned by `/seny:evolve` with this same format plus the specifics in `templates/epic/evolution.md`.
 - Never repeat the project docs: the stack, the conventions and the design tokens live in `architecture.md` and `design-system.md`; a plan names the sections it relies on.
 - Statuses, exactly: `todo`, `in-progress`, `review`, `done`.

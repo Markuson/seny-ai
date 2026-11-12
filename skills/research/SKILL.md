@@ -33,7 +33,7 @@ You are in the Research phase. Your job is to understand, not to solve.
 If it's not obvious, ask me.
 
 ## New app → `product.md`
-Inputs: my idea, any brief, notes or references I give (files from other tools included: cite them as the source), and the project rules. If `product.md` exists, update it instead of starting over.
+Inputs: my idea, any brief, notes or references I give (files from other tools included: cite them as the source), and the project rules. Long reference material (an old version's inventory, content to migrate, a pasted brief) goes to `<docs>/project/inputs/`, linked from `product.md`, not inside it. If `product.md` exists, update it instead of starting over.
 Depth: the full interview (vision, users and their needs, core needs with priorities, MVP in and out, constraints, references, risks). This document decides what everything else builds; take the time.
 Next after approval: `/seny:plan project` (architecture).
 
@@ -55,8 +55,8 @@ When the last one is approved: "The codebase is mapped." Next: `/seny:plan proje
 ## Epic → `<docs>/epics/<slug>/research.md`
 1. Find the epic in `roadmap.md`. Not there: propose a kebab-case slug, a size (S 1–3 stories, M 4–8, L more) and a one-line goal, and ask whether to add it to the roadmap.
 2. **Size S doesn't need research**: tell me, and point to `/seny:plan <slug>`. Go on only if I insist.
-3. Propose the branch `feature/<slug>` (or the repo's convention). If the folder exists, update its research instead of starting over; keep any `## Spike findings` section as it is.
-4. Inputs: the project rules, `architecture.md`, `design-system.md`, the parts of `product.md` and `codebase.md` that touch this epic, the roadmap row, my inputs, and the code it touches. If the repo has code but no `architecture.md`, suggest `/seny:research project` first; if I prefer to go on, map only what this epic needs.
+3. The epic's branch is `feature/<slug>` (or the repo's convention); the document loop creates it before writing. If the folder exists, update its research instead of starting over; keep any `## Spike findings` section as it is.
+4. Inputs: the project rules, the roadmap row and its epic notes, `architecture.md`, `design-system.md`, the parts of `product.md`, `codebase.md` and `inputs/` that touch this epic, what I give you, and the code it touches. If the repo has code but no `architecture.md`, suggest `/seny:research project` first; if I prefer to go on, map only what this epic needs.
 5. Through the loop (depth: size M or L), write one page at most:
    - **Problem** — 3 lines
    - **Users / roles** — what each one needs

@@ -40,7 +40,7 @@ Requires `product.md` approved; if it is missing or `draft`, stop and point to `
 1. **`architecture.md`.** Inputs: `product.md`, my stack defaults (`~/.claude/seny/stack.md`, else `${CLAUDE_PLUGIN_ROOT}/templates/stack.example.md`). Full interview: every hard-to-reverse choice is asked. Write stack, structure, data and state, data model, boundaries, conventions, key decisions. App-wide only.
    After approval: fill the placeholders of the project rules that the architecture now answers (Project, Stack, Commands with the planned scripts, Product rules from `product.md`). Show me the lines before writing them.
 2. **`design-system.md`**, if the product has UI. Ask whether to write it now. No → set `Design system: declined on <YYYY-MM-DD>` in `architecture.md` and move on. No UI → `not applicable (no UI)`. Yes → load the design skills that match the stack, if installed (`frontend-design`, `web-design-guidelines`, `vercel-react-native-skills`; if none, continue and tell me which would help), give me two visual directions in 3 lines each and a recommendation, wait for my choice, then write it. After approval: set `Design system: design-system.md` in `architecture.md`.
-3. **`roadmap.md`.** Inputs: `product.md`, `architecture.md`. Split the MVP into **epics**: each one a deliverable capability (or a technical block like `foundation` or `launch`) that fits one branch and one pull request. Give each a type, a **size** (S 1–3 stories, M 4–8, L more than 8, and split anything that would be L unless it can't be split), a one-line goal and dependencies. `foundation` is always first. Ask me about the order and the sizes.
+3. **`roadmap.md`.** Inputs: `product.md`, `architecture.md`. Split the MVP into **epics**: each one a deliverable capability (or a technical block like `foundation` or `launch`) that fits one branch and one pull request. Give each a type, a **size** (S 1–3 stories, M 4–8, L more than 8, and split anything that would be L unless it can't be split), a one-line goal and dependencies. `foundation` is always first. Ask me about the order and the sizes. Under `## Epic notes`, give each epic up to 3 lines: the decisions `product.md` already took about it and pointers to its detail, so its plan doesn't have to read everything again.
 4. **`epics/foundation/plan.md`**, in two passes like any size-L plan (see Epic mode). `Research: ../../project/product.md`. Foundation leaves the base running and deployed with nothing product-specific: scaffold, strict types, lint/typecheck/test wired, the theme from the design system, base layout or navigation, CI if wanted, a placeholder deploy. Its last story records `<docs>/project/baseline.md` with every check green (`By: foundation`). Its scope lists capabilities, not the stack again: that lives in `architecture.md`.
 
 When the foundation plan is approved: "Planning is done." Next: `/clear`, then `/seny:implement next`.
@@ -50,7 +50,7 @@ Requires `codebase.md` and `architecture.md` approved. Only `roadmap.md`: the ep
 
 ## Epic mode → `<docs>/epics/<slug>/plan.md`
 1. **Size** from the roadmap row (or estimate it and tell me). It sets the depth and the inputs:
-   - **S**: no research needed. Inputs: the roadmap row, `product.md`, `architecture.md`, `design-system.md` where relevant, and the code the epic touches. One pass, 0–1 rounds of questions.
+   - **S**: no research needed. Inputs: the roadmap row and its epic notes, the sections of `product.md` and `inputs/` they point to (not the whole product document), `architecture.md`, `design-system.md` where relevant, and the code the epic touches. One pass, 0–1 rounds of questions.
    - **M**: requires `research.md` approved (else stop and point to `/seny:research <slug>`). One pass, 1–2 rounds.
    - **L**: requires `research.md` approved. **Two passes**, each its own run through the loop:
      - *Shape*: goal, scope, architecture changes, key decisions, and the stories as one line each, in order. Approve with `shape approved`.
@@ -70,7 +70,7 @@ After approval: add the `Design:` line to every UI story in the plan, and add or
 For a clear requirement, a few files, no new screens to design, and no change to the data model, auth or external services.
 1. Read the project rules, `architecture.md` if it exists, and only the code the change touches.
 2. If it turns out to need more (new data model, auth, external service, new UI design, open requirements, more than ~3 stories), stop and tell me to treat it as an epic instead.
-3. Through the loop (0–1 rounds), write `<docs>/epics/<slug>/plan.md` in the light form: `Status`, `Branch:`, `Research: none (light)`, Goal, Scope, 1–3 stories, each with Approach (unless trivial) and Verify.
+3. Through the loop (0–1 rounds), write `<docs>/epics/<slug>/plan.md` in the light form: `Status`, `Type: light`, `Branch:`, `Research: none (light)`, Goal, Scope, 1–3 stories, each with Approach (unless trivial) and Verify. It gets no roadmap row.
 4. Next after approval: `/seny:implement S1` (or `next`).
 
 ## Change mode (the plan exists and something changed)

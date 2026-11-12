@@ -2,7 +2,7 @@
 
 Every Seny command, with the same shape each time: how to call it, when to use it, what it reads and writes, what it asks you, and where it stops. For the ideas behind them, see [concepts](concepts.md).
 
-All commands start by reading the [state snapshot](concepts.md#the-state-snapshot), and none of them ever pushes. `<docs>` means your docs root: `docs/` or `.seny/`. Research, plan and evolve write **one document per run**, through the [document loop](concepts.md#one-document-at-a-time): questions, draft, your review, approval, commit proposal, and the next command after a `/clear`.
+All commands start by reading the [state snapshot](concepts.md#the-state-snapshot), and none of them ever pushes. `<docs>` means your docs root: `docs/` or `.seny/`. Research, plan and evolve write **one document per run**, through the [document loop](concepts.md#one-document-at-a-time): questions (saved as you answer), draft, your review, approval, commit proposal, and the next command after a `/clear`. Project documents are written on the default branch; an epic's documents on its own branch.
 
 | Command | One line |
 |---|---|
@@ -59,6 +59,8 @@ All commands start by reading the [state snapshot](concepts.md#the-state-snapsho
 - `/seny:research project refresh`: do the project docs still match the code?
 
 You can pass a file instead of (or with) the idea: `/seny:research project docs/inputs/brief.md`.
+
+Long reference material (an old version's inventory, content to migrate, a pasted brief) is stored in `<docs>/project/inputs/` and linked, not copied into the document.
 
 **New app → `product.md`**, with the full interview: vision, users, core needs with priorities, MVP in and out, constraints, references, risks, assumptions and open questions. It's the document everything else builds on, so it takes as many rounds of questions as it needs. Next: `/seny:plan project`.
 
@@ -127,7 +129,7 @@ Without a document name it writes the next pending one. One document per run.
 **New app** (requires `product.md` approved):
 1. **`architecture.md`**: chooses the stack from `~/.claude/seny/stack.md` (or the plugin's example) with a full interview on everything hard to reverse. After approval, fills the Project, Stack, Commands and Product rules placeholders of your project `CLAUDE.md` (shown to you first).
 2. **`design-system.md`**, if there's UI: asks whether to do it now; on yes, loads your design skills, offers **two visual directions**, waits for your choice. On no, records `Design system: declined` so nobody asks again.
-3. **`roadmap.md`**: the MVP split into **epics** (one branch and one PR each), every one with a type, a **size** (S, M or L), a goal and dependencies; `foundation` first. It asks you about the order and the sizes.
+3. **`roadmap.md`**: the MVP split into **epics** (one branch and one PR each), every one with a type, a **size** (S, M or L), a goal and dependencies; `foundation` first. It asks you about the order and the sizes, and writes up to three lines of **epic notes** per epic (decisions already taken, pointers to detail).
 4. **`epics/foundation/plan.md`**, in **two passes**: the shape (goal, scope, decisions, one line per story), then the stories in full. Its last story records an all-green `baseline.md`. Its scope lists capabilities, never the stack again.
 
 When the foundation plan is approved: "Planning is done." Next: `/clear`, then `/seny:implement next`.
@@ -150,7 +152,7 @@ When the foundation plan is approved: "Planning is done." Next: `/clear`, then `
 
 | Size | Needs | Passes | Questions |
 |---|---|---|---|
-| S | the project docs and the roadmap row (no research) | 1 | 0–1 rounds |
+| S | the roadmap row, its epic notes and what they point to (no research) | 1 | 0–1 rounds |
 | M | `research.md` approved | 1 | 1–2 rounds |
 | L | `research.md` approved | 2: shape (`shape approved`), then stories (`approved`), each its own run | 1–2 per pass |
 
@@ -160,7 +162,7 @@ The plan has a goal, scope (in and out, with reasons), architecture changes on t
 
 **Change mode:** updates the plan (add, split, reorder, edit or remove `todo` stories; scope, architecture changes, decisions) without touching stories that already started: their status, criteria, review records and ticks are history. The plan goes back to `draft` until you approve the change.
 
-**Light mode:** for a clear change in a few files with no data model, auth, external service or new screens. Reads only the code the change touches and writes a short plan (1–3 stories) with a quick review. Stops and suggests an epic if it turns out bigger.
+**Light mode:** for a clear change in a few files with no data model, auth, external service or new screens. Reads only the code the change touches and writes a short plan (`Type: light`, 1–3 stories, no roadmap row) with a quick review. Stops and suggests an epic if it turns out bigger.
 
 **Never:** writes code, writes two documents in one run, or resets the status of a story that isn't `todo`. Challenges anything over-engineered and prefers the boring option.
 
@@ -183,7 +185,7 @@ Story ids are `S1`, `S2`… within an epic; add the slug when several epics are 
 6. **Builds** per the `Tests` mode: `tdd` (red, shown to fail for the right reason → green → refactor), `after`, or `none`.
 7. **Runs the checks** against the baseline. Only new failures block. Two attempts at fixing a failure, then it stops and shows you the error.
 8. **Updates the plan:** ticks criteria and fixed findings, removes `Notes`, updates evolution progress. Status → `review`.
-9. **Review** (mode `auto`): runs the [review loop](concepts.md#reviews) with one fix round. Mode `manual`: tells you to run `/seny:review`.
+9. **Review** (mode `auto`): runs the [review loop](concepts.md#reviews) with one fix round, followed by a cheaper re-review of just the fixes. Mode `manual`: tells you to run `/seny:review`.
 10. **Reports** what changed and why, checks vs baseline, the verdict, and what to check by hand. Asks whether the story is done.
 
 When you say yes, it [closes the story](#closing-a-story).
@@ -256,18 +258,15 @@ When you confirm "done" (here or at the end of `/seny:implement`):
 
 **Usage:** `/seny:evolve <what to change> | <evolution slug>`
 
-**Use it when** you want to change how the app is built without changing what it does.
+**Use it when** you want to change how the app is built without changing what it does. An evolution is an epic with `Type: evolution`; it takes two runs.
 
-**Steps:**
-1. **Research:** reads `architecture.md` (no second evolution on an area already in transition), `codebase.md` and the baseline; measures the footprint, what depends on it and how well it's tested; for upgrades, reads the official migration guide and changelog and lists the breaking changes that affect your code. Writes the evolution's `research.md` (an evolution is an epic with `Type: evolution`) and stops for your review.
-2. **Options** (next run): 2–3 options with effort, risk and reversibility, including "do nothing for now" when it's real, and a recommendation. **Waits for your choice.**
-3. **Plan:** writes `plan.md` with `Type: evolution` through the document loop: characterization tests first, measurable slices with `Progress:` lines, cleanup stories last. Proposes the **In transition** row and the decision record for `architecture.md`, and a place in the roadmap, each written after your yes.
+**Run 1, research and options:** reads `architecture.md` (no second evolution on an area already in transition), `codebase.md` and the baseline; measures the footprint, what depends on it and how well it's tested; for upgrades, reads the official migration guide and changelog and lists the breaking changes that affect your code. Writes the evolution's `research.md` with 2–3 options (effort, risk, reversibility; "do nothing for now" when it's real) and a recommendation. **Approving it is choosing an option**, recorded as `Chosen:`.
 
-Passing an existing slug continues where it stopped (usually at the choice).
+**Run 2, plan** (`/seny:evolve <slug>`): writes `plan.md` through the document loop: characterization tests first, measurable slices with `Progress:` lines, cleanup stories last. Then proposes the **In transition** row and the decision record for `architecture.md`, and a row in the roadmap, each written after your yes.
 
 **Redirects you** if it's really new behaviour (an epic for the roadmap), a tiny safe change (`/seny:plan light`), or depends on something only code can show (`/seny:spike`).
 
-**Next:** `/clear`, then `/seny:implement <first story>`. Implement keeps the transition's progress up to date.
+**Next:** `/clear`, then `/seny:implement <slug> S1`. Implement keeps the transition's progress up to date.
 
 ---
 

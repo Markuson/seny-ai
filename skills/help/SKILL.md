@@ -26,6 +26,8 @@ Three levels: the **project** (`<docs>/project/`: `product.md`, `codebase.md`, `
 
 Epic sizes set the planning: **S** (1–3 stories) `/seny:plan <slug>` only · **M** (4–8) `/seny:research <slug>` → `/seny:plan <slug>` · **L** (more) research, then the plan in two passes (shape, stories) · plus `/seny:plan <slug> design` when there's UI.
 
+Light plans (`Type: light`) are small changes outside the roadmap: they show among the open epics but are not roadmap work. `<docs>/project/inputs/` is reference material, not documents to approve.
+
 Commands: `/seny:init` · `/seny:research project [<idea> | refresh | <document>]` · `/seny:research <epic>` · `/seny:spike <question>` · `/seny:plan project [<document>]` · `/seny:plan <slug> [design | <change>]` · `/seny:plan light <change>` · `/seny:implement [<slug>] <S#> | next [no-review]` · `/seny:review [<slug>] [<S#>] [done | range]` · `/seny:fix <bug>` · `/seny:evolve <change>`.
 
 ## Mode 1 — no request: "where am I, what next?"

@@ -14,6 +14,9 @@ Questions people ask, and what to do when something surprises you. Can't find yo
 **Why does planning stop after every document?**
 Because the plan is where everything gets decided, and a mistake there costs the most later. One document per run means you review each decision while it's small, the next document builds only on approved ones, and every run starts with a clean context after `/clear`. It's slower per document and faster per project.
 
+**My documents are getting long.**
+Each document has a size budget and Seny checks it before showing you a draft. If one grew anyway, ask for a trim: decisions stay, raw material (inventories, pasted content, long comparisons) moves to `docs/project/inputs/` with a link.
+
 **Can I make it go faster?**
 Yes, three ways. Say "go ahead" during an interview and Seny stops asking and writes with its recommended answers. Size epics honestly: an S epic skips research and gets at most one round of questions. And changes outside the roadmap can use `/seny:plan light`.
 
@@ -121,6 +124,9 @@ Its hook blocks anything that could write files, including redirections like `> 
 
 **A story doesn't appear in the snapshot.**
 Its heading probably lost its shape. It must be `#### S<n> · <title> — \`<status>\``, with the status as the last thing on the line.
+
+**How do I know a change to Seny itself didn't break something?**
+`bash tests/run.sh` runs the guard and snapshot tests and lints the repo (manifests, paths, links, retired wording). CI runs it on Linux and macOS.
 
 **I work on macOS and Linux.**
 Both are supported: the scripts use only bash 3.2 and the BSD/GNU-compatible subset of `grep`, `sed` and `awk`.
