@@ -18,7 +18,7 @@ Under the story in the plan (for a fix, in chat only):
   - [ ] [blocker] path/file.ts:42 — <problem> → <fix>
   - [ ] [should] ...
 ```
-Leave nits out of the plan; mention them in chat.
+Leave nits out of the plan; mention them in chat. Story ids are `S1`, `S2`… within the epic.
 
 ## 3. Fix round (only if the caller allows one)
 On **CHANGES REQUESTED** with fix rounds left:

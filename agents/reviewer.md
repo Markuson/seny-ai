@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: Seny's independent code reviewer for one story or fix. Read-only. Checks the diff against the acceptance criteria, the project docs and the CLAUDE.md rules, runs the checks against the baseline, and returns findings with a verdict. Used by /seny:review and /seny:fix.
+description: Seny's independent code reviewer for one story or fix. Read-only. Checks the diff of one story of an epic plan against its acceptance criteria, the project docs and the CLAUDE.md rules, runs the checks against the baseline, and returns findings with a verdict. Used by /seny:review and /seny:fix.
 tools: Read, Grep, Glob, Bash
 effort: high
 color: purple

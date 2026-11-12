@@ -19,7 +19,7 @@ Bug: $ARGUMENTS
 - Fix the cause, not the symptom. No workarounds that hide the error (empty catch, optional chaining over a value that should exist, a sleep for a race).
 - Minimal change. Don't refactor, rename or "improve" anything the bug doesn't need.
 - If the bug is in a story that is not `done` yet, stop and tell me to use `/seny:implement <id>` (fix round) instead.
-- If the root cause is bigger than a fix — a design flaw, a data model change or migration, auth or permissions, changes across many modules — stop, explain it, and recommend `/seny:plan light <change>` or `/seny:research <change>`.
+- If the root cause is bigger than a fix — a design flaw, a data model change or migration, auth or permissions, changes across many modules — stop, explain it, and recommend `/seny:plan light <change>` or a new epic on the roadmap.
 - Follow the project rules and `<docs>/project/architecture.md` if it exists.
 - Never push. Commit only following my commit rule.
 

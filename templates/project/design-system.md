@@ -1,12 +1,13 @@
 # design-system.md
 
-Format for `<docs>/project/design-system.md` (`<docs>` is the Seny docs root). App-wide: feature docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
+Format for `<docs>/project/design-system.md` (`<docs>` is the Seny docs root). App-wide: epic docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
 
 Only for apps with UI. In brownfield, describe the tokens and components that actually exist; if there is no coherent system, say so instead of inventing one.
 
 ```markdown
 # Design system
 
+Status: <draft | approved (YYYY-MM-DD)>
 Platform: <web | mobile | both>
 References: <links, screenshots, Figma>
 

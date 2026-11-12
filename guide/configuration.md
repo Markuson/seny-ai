@@ -120,7 +120,7 @@ Three ways to set it, from the most permanent to the most temporary:
 
 1. **Per project:** `- Seny review: manual` in the `## Seny` section.
 2. **Per session:** tell Claude "don't review in this session".
-3. **Per run:** `/seny:implement E1-S3 no-review`.
+3. **Per run:** `/seny:implement S3 no-review`.
 
 Either way, **only you** move a story to `done`.
 
@@ -185,7 +185,7 @@ For repos where you can't (or don't want to) add files:
 | File | Purpose | Visible to git? |
 |---|---|---|
 | `.seny/CLAUDE.md` | Project rules, including `- Seny docs: \`.seny\`` | No |
-| `.seny/project/`, `.seny/features/` | The documents | No |
+| `.seny/project/`, `.seny/epics/` | The documents | No |
 | `CLAUDE.local.md` | One line, `@.seny/CLAUDE.md`, so Claude Code loads the rules in every session | No |
 | `.git/info/exclude` | Lists `.seny/` and `CLAUDE.local.md` | (it's git's own local file) |
 
@@ -203,11 +203,11 @@ Nothing tracked changes, and nobody else sees a thing. The catch: the docs live 
 
 ## Companion skills
 
-Seny loads design skills when they're installed and the work calls for them (design system, feature design, UI stories). They're optional: without them Seny continues and tells you which one would help.
+Seny loads design skills when they're installed and the work calls for them (design system, epic design, UI stories). They're optional: without them Seny continues and tells you which one would help.
 
 | Skill | What it adds | Used for | Where to get it |
 |---|---|---|---|
-| `frontend-design` | Distinctive visual direction for web UI | Design system and feature design (web) | Anthropic's official plugins: `/plugin install frontend-design@claude-plugins-official` |
+| `frontend-design` | Distinctive visual direction for web UI | Design system and epic design (web) | Anthropic's official plugins: `/plugin install frontend-design@claude-plugins-official` |
 | `web-design-guidelines` | Accessibility and UX rules for web interfaces | Design, and the reviewer's UI checks | Vercel's [agent-skills](https://github.com/vercel-labs/agent-skills) collection |
 | `vercel-react-native-skills` | React Native and Expo patterns and performance rules | Design and UI stories on mobile | Vercel's [agent-skills](https://github.com/vercel-labs/agent-skills) collection |
 

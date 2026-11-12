@@ -1,5 +1,6 @@
 # Architecture
 
+Status: approved (2026-11-03)
 Last updated: 2026-11-03 by streaks
 Design system: `design-system.md`
 

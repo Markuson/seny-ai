@@ -1,7 +1,7 @@
 ---
 name: spike
-description: Answer one technical question by trying it - throwaway code on a spike branch, time-boxed, with the findings written into the feature research. The only Seny command that writes disposable code.
-argument-hint: "<question> [for <feature slug>]"
+description: Answer one technical question by trying it - throwaway code on a spike branch, time-boxed, with the findings written into the epic research. The only Seny command that writes disposable code.
+argument-hint: "<question> [for <epic slug>]"
 disable-model-invocation: true
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh) Bash(git status *) Bash(git branch --show-current) Bash(git log *)
 ---
@@ -27,11 +27,11 @@ A spike is rauxa with a helmet on: try things fast to answer ONE question that r
 - Never push.
 
 ## Steps
-1. **Frame.** In a few lines: the question; what each possible answer would change in the plan; the evidence that will settle it (a log, a measurement, a passing call, a screenshot). Propose the slug, the branch `spike/<slug>`, the time box, and the feature it belongs to (from the input, or ask; if the feature has no folder yet, its `research.md` will start with just the findings). Wait for my yes.
+1. **Frame.** In a few lines: the question; what each possible answer would change in the plan; the evidence that will settle it (a log, a measurement, a passing call, a screenshot). Propose the slug, the branch `spike/<slug>`, the time box, and the epic it belongs to (from the input, or ask; if the epic has no folder yet, its `research.md` will start with just the findings). Wait for my yes.
 2. **Branch.** Remember the current branch, then create `spike/<slug>` from it.
 3. **Try.** The smallest code that answers the question. Start with the most likely approach; if it fails, note why and try the next. Collect evidence as you go.
 4. **Keep or drop the code.** Ask me: commit the spike code on `spike/<slug>` (message `spike: <question>`, never merged), or discard it. Then switch back to the branch you came from. Nothing from the spike is left uncommitted there.
-5. **Record**, on the original branch, in `<docs>/features/<feature>/research.md`:
+5. **Record**, on the original branch, in `<docs>/epics/<epic>/research.md`:
    ```markdown
    ## Spike findings
 
@@ -43,4 +43,4 @@ A spike is rauxa with a helmet on: try things fast to answer ONE question that r
    - Code: <branch `spike/<slug>` (not merged) | discarded>
    ```
    If the question was listed under the research's open questions, mark it answered there with a link to the finding.
-6. **Stop.** Give me the answer in 3 lines and its consequences. Next: `/seny:plan <slug>` (or `/seny:research <slug>` if the feature has no research yet).
+6. **Stop.** Give me the answer in 3 lines and its consequences. Next: `/seny:plan <slug>` (or `/seny:research <slug>` if the epic has no research yet and its size is M or L).

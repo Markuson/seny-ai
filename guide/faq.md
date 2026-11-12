@@ -11,14 +11,26 @@ Questions people ask, and what to do when something surprises you. Can't find yo
 
 ## Using Seny
 
+**Why does planning stop after every document?**
+Because the plan is where everything gets decided, and a mistake there costs the most later. One document per run means you review each decision while it's small, the next document builds only on approved ones, and every run starts with a clean context after `/clear`. It's slower per document and faster per project.
+
+**Can I make it go faster?**
+Yes, three ways. Say "go ahead" during an interview and Seny stops asking and writes with its recommended answers. Size epics honestly: an S epic skips research and gets at most one round of questions. And changes outside the roadmap can use `/seny:plan light`.
+
+**What's the difference between an epic, a light change and a fix?**
+An **epic** is a roadmap row: a capability users (or the project) need, with its own branch and PR. A **light change** is a small, clear improvement that doesn't deserve a roadmap row (1–3 stories). A **fix** repairs something that should already work. `/seny:help <what you want>` picks for you.
+
+**Should an epic have sub-epics?**
+No. Seny has three levels: project, epics, stories. If an epic's stories need grouping, split it into two epics on the roadmap.
+
 **Do I have to use every command?**
 No. Most days you'll use three: `/seny:research`, `/seny:plan` and `/seny:implement`. Bugs go to `/seny:fix`, tiny things don't need Seny at all (the Direct track), and `/seny:help` tells you which track a change deserves.
 
 **My project already has a `docs/` folder. Will Seny make a mess?**
-No. Seny only uses `docs/project/` and `docs/features/` and ignores everything else in `docs/`. If you prefer another place, change the line in your project rules to, say, `- Seny docs: \`documentation/seny\``, and move the folders there.
+No. Seny only uses `docs/project/` and `docs/epics/` and ignores everything else in `docs/`. If you prefer another place, change the line in your project rules to, say, `- Seny docs: \`documentation/seny\``, and move the folders there.
 
 **I already have a brief, a PRD or brainstorming notes from another tool.**
-Pass the file to research: `/seny:research project path/to/brief.md` for a new app, or `/seny:research path/to/notes.md` for one feature. Research reads it, cites it as the source, and writes Seny's own documents. Keep the original as read-only input: from then on, the Seny documents are the source of truth.
+Pass the file to research: `/seny:research project path/to/brief.md` for a new app, or `/seny:research path/to/notes.md` for one epic. Research reads it, cites it as the source, and writes Seny's own documents. Keep the original as read-only input: from then on, the Seny documents are the source of truth.
 
 **Does it work without tests, or without a `package.json`?**
 Yes. Checks are optional: with none defined, the baseline is skipped and stories are verified through their `Verify` lines and the review. When you add checks later, the next story records a baseline. The best moment to add them is `foundation` (new apps) or an early evolution (old ones).
@@ -27,7 +39,7 @@ Yes. Checks are optional: with none defined, the baseline is skipped and stories
 The method isn't: commands come from your project rules, and conventions from your `CLAUDE.md` files. Some templates mention Tailwind or NativeWind as examples; ignore what doesn't apply. The author's defaults are TypeScript-flavoured because that's what he builds.
 
 **Can a team use it?**
-Yes, in shared mode. The documents are Markdown in the repo, reviewed in PRs like code. Practical tips: one person per feature (or per epic), commit `plan.md` with the code of each story, and resolve plan conflicts like any merge conflict (statuses are one word at the end of a line, so conflicts are small). The baseline notices teammates' work and refreshes itself.
+Yes, in shared mode. The documents are Markdown in the repo, reviewed in PRs like code. Practical tips: one person per epic, commit `plan.md` with the code of each story, and resolve plan conflicts like any merge conflict (statuses are one word at the end of a line, so conflicts are small). The baseline notices teammates' work and refreshes itself.
 
 **How big should a story be?**
 One commit, a handful of files, reviewable in one sitting, working end to end. If you need a second coffee to review it, it's two stories. If it has no user-visible or testable outcome, it's probably a task inside another story.
@@ -43,13 +55,13 @@ Yes: private mode keeps everything in `.seny/`, invisible to git. See [configura
 ## Working with stories
 
 **How do I abandon or postpone a story?**
-Use Change mode: `/seny:plan <slug> drop E1-S3, it's not needed anymore` or `… move E1-S3 to a later epic`. Stories that already started stay in the plan as history; Seny adds a note or a follow-up story instead of rewriting them. Revert any half-done code yourself with git.
+Use Change mode: `/seny:plan <slug> drop S3, it's not needed anymore` or `… move S3 to a separate epic`. Stories that already started stay in the plan as history; Seny adds a note or a follow-up story instead of rewriting them. Revert any half-done code yourself with git.
 
 **The plan turned out wrong in the middle of a story.**
 That's exactly when `/seny:implement` stops instead of improvising. Run `/seny:plan <slug> <what changed>`, then `/seny:implement <id>` again. If the change is big (new data model, new screens), update the research first.
 
-**Can I work on two features at the same time?**
-Yes, on separate branches. Commit (or stash) before switching, so each review sees one story. With several features in progress, `/seny:help` lists them and asks which one to continue.
+**Can I work on two epics at the same time?**
+Yes, on separate branches. Commit (or stash) before switching, so each review sees one story. With several epics in progress, `/seny:help` lists them and asks which one to continue.
 
 **I ran out of context in the middle of a story.**
 `/seny:implement` writes a `Notes:` line under the story (done so far, decisions, next step) and asks you to `/clear`. Run the same command again: it resumes from the notes. If a session ended abruptly before the notes were written, the story is still `in-progress`; implement will read the diff and carry on.
@@ -58,7 +70,7 @@ Yes, on separate branches. Commit (or stash) before switching, so each review se
 If it's still `todo`: `/seny:plan <slug> <change>`, or edit `plan.md` by hand, it's your file. If it's already started, prefer a new story for the extra work, so the review of the current one stays meaningful.
 
 **Can I edit the documents by hand?**
-Yes, they're yours. Keep the shapes the tools read: story headings like `#### E1-S2 · Title — \`status\``, roadmap rows starting with `| <number> |`, and the `Recorded: … · Commit: \`sha\`` line of the baseline (never edit the baseline by hand, though; re-record it).
+Yes, they're yours. Keep the shapes the tools read: story headings like `#### S2 · Title — \`status\``, the `Status:` line at the top of each document, roadmap rows starting with `| <number> |`, and the `Recorded: … · Commit: \`sha\`` line of the baseline (never edit the baseline by hand, though; re-record it).
 
 **Where's the commit? Seny didn't commit.**
 Seny commits only when a story becomes `done` and your commit rule allows it. If you never said "commit", it asks. See [configuration](configuration.md#commits).
@@ -108,7 +120,7 @@ Seny considers a baseline stale when commits by *other people* arrived after it.
 Its hook blocks anything that could write files, including redirections like `> file`. `2>&1`, pipes into `tail` or `grep`, and `> /dev/null` are fine. If a project check genuinely writes files (coverage reports, build output), that's allowed: the block is about the command shape, not the check. If a legitimate read-only command is blocked, please open an issue with the command.
 
 **A story doesn't appear in the snapshot.**
-Its heading probably lost its shape. It must be `#### E<n>-S<n> · <title> — \`<status>\``, with the status as the last thing on the line.
+Its heading probably lost its shape. It must be `#### S<n> · <title> — \`<status>\``, with the status as the last thing on the line.
 
 **I work on macOS and Linux.**
 Both are supported: the scripts use only bash 3.2 and the BSD/GNU-compatible subset of `grep`, `sed` and `awk`.

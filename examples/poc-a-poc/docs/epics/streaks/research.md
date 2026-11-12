@@ -1,5 +1,7 @@
 # Streaks — research
 
+Status: approved (2026-11-02)
+
 ## Problem
 Families check off habits, but nothing shows progress over time, so motivation fades after a week. Streaks make progress visible, and a gentle reminder before a streak breaks keeps it going without nagging.
 

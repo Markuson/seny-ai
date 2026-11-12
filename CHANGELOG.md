@@ -2,6 +2,25 @@
 
 All notable changes to Seny. Versions follow [semver](https://semver.org/): while Seny is `0.x`, minor versions may change commands or document formats.
 
+## [0.5.0] — 2026-11-12
+
+Planning gets the weight it deserves: one document at a time, epics with sizes, and the agile three levels.
+
+### Changed
+- **Project → epics → stories.** "Features" are now **epics**: one roadmap row, one folder (`<docs>/epics/<slug>/`), one branch, one pull request. Plans are a flat list of stories `S1…Sn`; there are no epics inside a plan any more. Story ids elsewhere are `<slug> S2`.
+- **Sizes.** Every roadmap row has a size (S 1–3 stories, M 4–8, L more) that decides how much planning the epic gets: S is a plan only, M is research then plan, L is research then a plan in two passes (shape, then stories), or a split.
+- **One document per run.** Research, plan and evolve write a single document through a shared loop (`references/document-loop.md`): an interview in rounds with recommended answers, a draft, a self-check, your review, changes, approval, a commit proposal and the next command after `/clear`. The depth of the interview follows the weight of the document.
+- **Document status.** Every document carries `Status: draft` until approved (`shape approved` between the passes of a large plan). Nothing builds on a draft; `/seny:implement` requires an approved plan; the state snapshot shows every status and size.
+- New-app planning runs in order: `product.md` → `architecture.md` → `design-system.md` → `roadmap.md` → the foundation plan (two passes). Existing code: `codebase.md` + `baseline.md` → `architecture.md` → `design-system.md`.
+- After the architecture is approved, `/seny:plan project` fills the Stack, Commands and Product rules placeholders of the project rules.
+- Plans never restate `architecture.md`: they name the sections they rely on.
+- Templates moved to `templates/epic/`; the roadmap gained a `Size` column.
+- `/seny:help` routes by document status and epic size.
+- Docs, README and the example project updated to the new structure.
+
+### Migrating from 0.4
+Rename `<docs>/features/` to `<docs>/epics/`, turn `#### E1-S2 ·` headings into `#### S<n> ·` (one flat list per plan), add `Status:` lines to the documents you already approved, and a `Size` column to the roadmap.
+
 ## [0.4.0] — 2026-11-10
 
 Documentation: everything Seny does, explained, with a real example.

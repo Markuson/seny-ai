@@ -2,7 +2,7 @@
   "name": "seny",
   "displayName": "Seny",
   "description": "Seny-driven development: research, plan, implement and review with the right amount of process for each change. Agile stories, TDD where it matters, an independent reviewer and a human gate.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": {
     "name": "Marc"
   },

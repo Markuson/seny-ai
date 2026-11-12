@@ -2,7 +2,7 @@
 # Seny: print the current project state for the skills.
 # Read-only. Always exits 0 so a skill never fails to load because of it.
 # Prints only what is open: finished work is summarised in one line, so the
-# output stays short however many features the project has.
+# output stays short however many epics the project has.
 set +e
 
 # Work from the repository root, even if Claude Code started in a subfolder.
@@ -59,9 +59,18 @@ for lock in pnpm-lock.yaml package-lock.json yarn.lock bun.lockb bun.lock; do
 done
 echo "package.json: $pkg · lockfiles:${locks:- none}"
 
-# Project docs
-project=$(ls "$root/project" 2>/dev/null | tr '\n' ' ')
-echo "Project docs: ${project:-none}"
+# Document status: the first "Status:" line of a document (draft, approved, shape approved)
+docstatus() {
+  st=$(grep -m1 -E '^Status:' "$1" 2>/dev/null | sed -E 's/^Status:[[:space:]]*//; s/[[:space:]]*\(.*//; s/[[:space:]]+$//')
+  printf '%s' "${st:-no status}"
+}
+
+# Project docs, each with its status
+project=""
+for f in product codebase architecture design-system roadmap; do
+  [ -f "$root/project/$f.md" ] && project="$project $f.md ($(docstatus "$root/project/$f.md"))"
+done
+echo "Project docs:${project:- none}"
 
 # Baseline: is it still the right reference?
 # Current when it is in this branch's history and every commit since then is yours
@@ -114,47 +123,58 @@ if [ -f "$root/project/roadmap.md" ]; then
   [ -n "$open" ] && printf '%s\n' "$open" | sed 's/^/  /'
 fi
 
-# Features: one line each with story counts; finished ones collapsed.
-# Story headings look like: #### E1-S2 · Title — `status`
+# Epics: one line each with size, documents and story counts; finished ones collapsed.
+# Story headings look like: #### S2 · Title — `status`
 done_names=""
 ndone=0
 found=0
 open_stories=""
-for d in "$root"/features/*/; do
+for d in "$root"/epics/*/; do
   [ -d "$d" ] || continue
   slug=$(basename "$d")
-  files=$(ls "$d" | tr '\n' ' ' | sed 's/ $//')
   plan="$d/plan.md"
+  docs=""
+  for f in research plan design; do
+    [ -f "$d/$f.md" ] && docs="$docs $f.md ($(docstatus "$d/$f.md"))"
+  done
+  size=""; type=""
   if [ -f "$plan" ]; then
-    counts=$(grep -E '^#### E[0-9]+-S[0-9]+' "$plan" | sed -nE 's/.*`([a-z-]+)`[[:space:]]*$/\1/p' |
-      awk '{n[$1]++; t++} END {
-        if (t == 0) { print "0:no stories yet"; exit }
-        s = t ":" (n["done"] + 0) "/" t " done";
-        split("review in-progress todo", order, " ");
-        for (i = 1; i <= 3; i++) if (n[order[i]]) s = s " · " n[order[i]] " " order[i];
-        print s }')
-    total=${counts%%:*}
-    ndn=$(grep -E '^#### E[0-9]+-S[0-9]+' "$plan" | grep -c '`done`[[:space:]]*$')
-    type=$(grep -m1 -E '^Type:' "$plan" | sed -E 's/^Type:[[:space:]]*//')
-    if [ "$total" != "0" ] && [ "$ndn" = "$total" ]; then
-      ndone=$((ndone + 1)); done_names="$done_names $slug"
-      continue
+    size=$(grep -m1 -E '^Size:' "$plan" | sed -E 's/^Size:[[:space:]]*//; s/[[:space:]].*//')
+    type=$(grep -m1 -E '^Type:' "$plan" | sed -E 's/^Type:[[:space:]]*//; s/[[:space:]].*//')
+  fi
+  if [ -z "$size" ] && [ -f "$root/project/roadmap.md" ]; then
+    size=$(grep -E "^\| *[0-9]+ *\| *$slug *\|" "$root/project/roadmap.md" | head -n1 | awk -F'|' '{gsub(/ /,"",$5); print $5}')
+  fi
+  counts="no stories yet"; total=0; ndn=0
+  if [ -f "$plan" ]; then
+    total=$(grep -cE '^#### S[0-9]+ ' "$plan")
+    ndn=$(grep -E '^#### S[0-9]+ ' "$plan" | grep -c '`done`[[:space:]]*$')
+    if [ "$total" -gt 0 ]; then
+      counts=$(grep -E '^#### S[0-9]+ ' "$plan" | sed -nE 's/.*`([a-z-]+)`[[:space:]]*$/\1/p' |
+        awk -v t="$total" '{n[$1]++} END {
+          s = (n["done"] + 0) "/" t " done";
+          split("review in-progress todo", order, " ");
+          for (i = 1; i <= 3; i++) if (n[order[i]]) s = s " · " n[order[i]] " " order[i];
+          print s }')
     fi
-    [ $found -eq 0 ] && echo "Open features:"
-    found=1
-    echo "  $slug${type:+ ($type)}: ${counts#*:} [$files]"
-    stories=$(grep -E '^#### E[0-9]+-S[0-9]+' "$plan" | grep -v '`done`[[:space:]]*$' |
-      sed -E "s/^#### /    $slug /")
+  fi
+  if [ "$total" -gt 0 ] && [ "$ndn" = "$total" ]; then
+    ndone=$((ndone + 1)); done_names="$done_names $slug"
+    continue
+  fi
+  [ $found -eq 0 ] && echo "Open epics:"
+  found=1
+  label="$slug"
+  [ -n "$size" ] && label="$label ($size${type:+, $type})"
+  echo "  $label: $counts ·${docs:- no documents}"
+  if [ -f "$plan" ]; then
+    stories=$(grep -E '^#### S[0-9]+ ' "$plan" | grep -v '`done`[[:space:]]*$' | sed -E "s/^#### /    $slug /")
     [ -n "$stories" ] && open_stories="$open_stories$stories"$'\n'
-  else
-    [ $found -eq 0 ] && echo "Open features:"
-    found=1
-    echo "  $slug: no plan yet [$files]"
   fi
 done
-[ $found -eq 0 ] && echo "Open features: none"
+[ $found -eq 0 ] && echo "Open epics: none"
 if [ $ndone -gt 0 ]; then
-  if [ $ndone -le 5 ]; then echo "Done features ($ndone):$done_names"; else echo "Done features: $ndone"; fi
+  if [ $ndone -le 5 ]; then echo "Done epics ($ndone):$done_names"; else echo "Done epics: $ndone"; fi
 fi
 if [ -n "$open_stories" ]; then
   echo "Open stories:"

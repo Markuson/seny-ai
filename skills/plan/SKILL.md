@@ -1,7 +1,7 @@
 ---
 name: plan
-description: Seny phase 2. Project mode - architecture, design system, roadmap and the foundation plan (new app), or a roadmap on top of the existing architecture. Feature mode - epics and stories (plan.md) and, with UI, a design document. Light mode - a 1-3 story plan for a small, clear change. Change mode - update an existing plan.
-argument-hint: "project | <feature slug> [design | <change>] | light <change>"
+description: Seny phase 2, decide and slice, one document per run. Project mode - architecture, design system, roadmap of sized epics and the foundation plan (new app), or a roadmap (existing code). Epic mode - the plan of one epic (and its design), as deep as its size. Light mode - 1-3 stories. Change mode - update a plan.
+argument-hint: "project [architecture | design-system | roadmap | foundation] | <epic slug> [design | <change>] | light <change>"
 disable-model-invocation: true
 effort: high
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh)
@@ -14,73 +14,67 @@ Input: $ARGUMENTS
 ## State
 !`bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh`
 
-`<docs>` below is the docs root printed above. Project rules: the files listed under "Project rules" above (already in your context).
+`<docs>` below is the docs root printed above. Project rules: the files listed under "Project rules" above (already in your context). Every document goes through `${CLAUDE_PLUGIN_ROOT}/references/document-loop.md`: read it now. Formats, read only the one you write: `${CLAUDE_PLUGIN_ROOT}/templates/project/<document>.md`, `${CLAUDE_PLUGIN_ROOT}/templates/epic/plan.md`, `${CLAUDE_PLUGIN_ROOT}/templates/epic/design.md`.
 
-You are in the Plan phase. Your job is to decide and slice, not to build.
+You are in the Plan phase. Your job is to decide and slice, not to build. This is where everything gets defined: precise beats fast.
 
 ## Rules
-- Do not write or change code. Only write documents under `<docs>/project/` and `<docs>/features/`.
+- **One document per run**, through the document loop. Then stop.
+- Do not write or change code. Only write the document this run owns (plus the after-approval steps listed below).
 - Mode from the input:
-  - `project` → **Project mode**.
+  - `project` (optionally followed by a document name) → **Project mode**.
   - `light <description>` → **Light mode**.
-  - `<slug> design` → **Feature mode, step 2 only** (the plan exists).
-  - `<slug> <anything else>`, when `<docs>/features/<slug>/plan.md` exists → **Change mode**.
-  - `<slug>`, or empty → **Feature mode**. If empty, use the only feature with a `research.md` and no plan; if unclear, ask.
-- If the research left open questions that change the plan, ask them in one batch before writing. If one can only be answered by trying code and has no spike finding, suggest `/seny:spike <question>` instead of planning around a guess.
+  - `<slug> design` → **Design**.
+  - `<slug> <anything else>`, when `<docs>/epics/<slug>/plan.md` exists → **Change mode**.
+  - `<slug>`, or empty → **Epic mode**. If empty, use the epic in progress, else the next roadmap epic whose dependencies are done; if unclear, ask.
 - Hard-to-reverse decisions (framework, database, auth, hosting): give me the trade-off and ask before writing around them. If two options fit, give the trade-off in two lines and let me choose.
 - Challenge anything over-engineered. Prefer the boring option unless there is a reason not to.
-- If a document already exists, update it: never reset the status of a story or feature that is not `todo`.
-- Formats, read only the ones you write: `${CLAUDE_PLUGIN_ROOT}/templates/project/<document>.md` (project docs), `${CLAUDE_PLUGIN_ROOT}/templates/feature/plan.md` (plans and stories), `${CLAUDE_PLUGIN_ROOT}/templates/feature/design.md` (feature design).
+- Never restate the project docs: an epic's plan names the sections of `architecture.md` and `design-system.md` it relies on and describes only what it adds.
+- Never reset the status of a story or epic that is not `todo`.
 
 ## Project mode
-Requires `<docs>/project/product.md` (new app) or `<docs>/project/codebase.md` (existing code); if neither exists, stop and tell me to run `/seny:research project`.
 
-**Existing code** (`architecture.md` already exists from the codebase analysis):
-1. Don't rewrite the architecture. Write or update `<docs>/project/roadmap.md`: the features I want, in order, plus the tech-debt items and evolutions from `codebase.md` that I choose (ask me which), each with its `Type`. No foundation feature.
-2. Stop. Give me the roadmap and the first row: a feature → `/seny:research <slug>`, an evolution → `/seny:evolve <slug>`.
+### New app: the documents in order
+Requires `product.md` approved; if it is missing or `draft`, stop and point to `/seny:research project`. One document per run; the next pending one is the first that is missing or not approved (or the one named in the input):
 
-**New app**:
-1. Choose the stack from my stack defaults: `~/.claude/seny/stack.md` if it exists, else `${CLAUDE_PLUGIN_ROOT}/templates/stack.example.md`. Apply them to what `product.md` needs; ask about anything hard to reverse.
-2. Write `<docs>/project/architecture.md`: stack, structure, data and state, data model, boundaries, key decisions. App-wide only.
-3. Write `<docs>/project/roadmap.md`: the MVP split into features (`Type: feature`), in order, each with a one-line goal, dependencies and status `todo`. The first one is always `foundation`.
-4. Write `<docs>/features/foundation/plan.md` (`Research: ../../project/product.md`). Foundation leaves the base running and deployed with nothing product-specific: scaffold, strict types, lint/typecheck/test wired, the theme from the design system, base layout or navigation, CI if wanted, a deploy of a placeholder screen. Its last story records `<docs>/project/baseline.md` with every check green (`By: foundation`).
-5. Give me the architecture in 5 lines, the roadmap, the foundation stories, and the 2–3 decisions you are least sure about.
-6. If the product has UI, ask whether to write the design system now. Without UI, set `Design system: not applicable (no UI)` in `architecture.md`. If I say no, set `Design system: declined on <YYYY-MM-DD>`, so nobody asks again. On yes:
-   1. Load the design skills that match the stack, if installed: `frontend-design` (web direction), `web-design-guidelines` (web a11y/UX), `vercel-react-native-skills` (React Native / Expo). If none is installed, continue and tell me which would help.
-   2. Give me two visual directions in 3 lines each and a recommendation, and wait for my choice. Use any references from `product.md`.
-   3. Write `<docs>/project/design-system.md` and set `Design system: design-system.md` in `architecture.md`.
-   4. Make sure foundation has stories to put the tokens in the theme and build the base components.
-7. Stop. Next: `/clear`, then `/seny:implement next`.
+1. **`architecture.md`.** Inputs: `product.md`, my stack defaults (`~/.claude/seny/stack.md`, else `${CLAUDE_PLUGIN_ROOT}/templates/stack.example.md`). Full interview: every hard-to-reverse choice is asked. Write stack, structure, data and state, data model, boundaries, conventions, key decisions. App-wide only.
+   After approval: fill the placeholders of the project rules that the architecture now answers (Project, Stack, Commands with the planned scripts, Product rules from `product.md`). Show me the lines before writing them.
+2. **`design-system.md`**, if the product has UI. Ask whether to write it now. No → set `Design system: declined on <YYYY-MM-DD>` in `architecture.md` and move on. No UI → `not applicable (no UI)`. Yes → load the design skills that match the stack, if installed (`frontend-design`, `web-design-guidelines`, `vercel-react-native-skills`; if none, continue and tell me which would help), give me two visual directions in 3 lines each and a recommendation, wait for my choice, then write it. After approval: set `Design system: design-system.md` in `architecture.md`.
+3. **`roadmap.md`.** Inputs: `product.md`, `architecture.md`. Split the MVP into **epics**: each one a deliverable capability (or a technical block like `foundation` or `launch`) that fits one branch and one pull request. Give each a type, a **size** (S 1–3 stories, M 4–8, L more than 8, and split anything that would be L unless it can't be split), a one-line goal and dependencies. `foundation` is always first. Ask me about the order and the sizes.
+4. **`epics/foundation/plan.md`**, in two passes like any size-L plan (see Epic mode). `Research: ../../project/product.md`. Foundation leaves the base running and deployed with nothing product-specific: scaffold, strict types, lint/typecheck/test wired, the theme from the design system, base layout or navigation, CI if wanted, a placeholder deploy. Its last story records `<docs>/project/baseline.md` with every check green (`By: foundation`). Its scope lists capabilities, not the stack again: that lives in `architecture.md`.
 
-## Light mode (one small, clear change)
+When the foundation plan is approved: "Planning is done." Next: `/clear`, then `/seny:implement next`.
+
+### Existing code
+Requires `codebase.md` and `architecture.md` approved. Only `roadmap.md`: the epics I want, plus the debt items and evolutions from `codebase.md` I choose (ask me which), each with type, size, goal and dependencies. No foundation; the architecture isn't rewritten. Next: the first row — size S → `/seny:plan <slug>`, M or L → `/seny:research <slug>`, evolution → `/seny:evolve <slug>`.
+
+## Epic mode → `<docs>/epics/<slug>/plan.md`
+1. **Size** from the roadmap row (or estimate it and tell me). It sets the depth and the inputs:
+   - **S**: no research needed. Inputs: the roadmap row, `product.md`, `architecture.md`, `design-system.md` where relevant, and the code the epic touches. One pass, 0–1 rounds of questions.
+   - **M**: requires `research.md` approved (else stop and point to `/seny:research <slug>`). One pass, 1–2 rounds.
+   - **L**: requires `research.md` approved. **Two passes**, each its own run through the loop:
+     - *Shape*: goal, scope, architecture changes, key decisions, and the stories as one line each, in order. Approve with `shape approved`.
+     - *Stories* (the next run, after `/clear`, when the plan says `shape approved`): every story in full. On approval, `approved`.
+     Before the shape pass, say whether the epic could be split instead.
+2. Read the research's `Spike findings`. If an open question can only be answered by trying code and has no finding, suggest `/seny:spike <question>` instead of planning around a guess.
+3. Write the plan (format: `templates/epic/plan.md`). Stories are a flat list `S1…Sn`. Every story gets a `Verify:` line, and every non-trivial one an `Approach:` anchored to the code (`file:line`, symbols), so `/seny:implement` can start in a fresh session without exploring again. If the epic touches an area **In transition**, plan it with the target pattern and say whether it should wait for the evolution or go first.
+4. App-wide changes (a new shared entity, service, token or base component): list them in the plan and ask whether to update `architecture.md` or `design-system.md`; update them only after a yes.
+5. If the story count doesn't fit the size, say so and propose resizing the roadmap row or splitting the epic.
+6. After approval: set the roadmap row to `in-progress` (add the row if it isn't listed). Next: if the epic has UI (new screens, components or a visible change) and no approved `design.md`, `/seny:plan <slug> design`; otherwise "Planning is done for this epic. Next: `/clear`, then `/seny:implement next`."
+
+## Design → `<docs>/epics/<slug>/design.md`
+Requires the plan approved. Load the design skills that match the stack, as in Project mode. Start from `design-system.md` and the existing theme and components: they win over anything new. Use any reference I give (Figma through a connected tool, screenshots, sites). If the visual direction is open (no design system yet), give me two options in 3 lines each and a recommendation, and wait. Write only the sections the epic needs. New tokens or base components other epics will reuse are proposed for `design-system.md` and written only after my yes.
+After approval: add the `Design:` line to every UI story in the plan, and add or split stories if the design revealed missing work (the plan goes back to `draft` for that change and through the loop). Next: `/clear`, then `/seny:implement next`.
+
+## Light mode (one small, clear change, no roadmap row needed)
 For a clear requirement, a few files, no new screens to design, and no change to the data model, auth or external services.
-1. Read the project rules, `<docs>/project/architecture.md` if it exists, and only the code the change touches.
-2. If it turns out to need more (new data model, auth, external service, new UI design, open requirements, more than ~3 stories), stop and tell me to use `/seny:research <change>` instead.
-3. Propose a slug and write `<docs>/features/<slug>/plan.md` in the light form of the plan format: `Branch:`, `Research: none (light)`, Goal, Scope, one epic with 1–3 stories, each with Approach (unless trivial) and Verify.
-4. Stop. Give me the stories and the first one: `/seny:implement <id>`.
+1. Read the project rules, `architecture.md` if it exists, and only the code the change touches.
+2. If it turns out to need more (new data model, auth, external service, new UI design, open requirements, more than ~3 stories), stop and tell me to treat it as an epic instead.
+3. Through the loop (0–1 rounds), write `<docs>/epics/<slug>/plan.md` in the light form: `Status`, `Branch:`, `Research: none (light)`, Goal, Scope, 1–3 stories, each with Approach (unless trivial) and Verify.
+4. Next after approval: `/seny:implement S1` (or `next`).
 
 ## Change mode (the plan exists and something changed)
 1. Read the plan, its `research.md` and `design.md` if they exist, and the project docs the change touches.
-2. If the change needs new understanding (new data model, auth, external service, new screens, open requirements), say so and suggest `/seny:research <slug>` to update the research first.
-3. Update `plan.md`: add, split, reorder, edit or remove `todo` stories, and the Scope, Architecture changes and Key decisions the change touches. Stories that are not `todo` are history: never change their status, criteria, review notes or ticks. If the change affects one of them, add a new story instead and say why.
-4. Stop. Give me what changed (stories added, edited, removed or reordered), any new open question, and the next story: `/seny:implement next`.
-
-## Feature mode
-
-### Step 1 — Plan
-1. Read `<docs>/features/<slug>/research.md` (if missing, stop and tell me to run `/seny:research`), including its `Spike findings`, the project rules, `architecture.md`, `design-system.md`, and the parts of `product.md` and `codebase.md` the feature touches.
-2. Write `<docs>/features/<slug>/plan.md`. The feature builds on `architecture.md`: describe only what it adds or changes. Without `architecture.md`, describe the full architecture the feature relies on. If the feature touches an area **In transition**, plan it with the target pattern (the rule for new code), and say whether it should wait for the evolution or go first.
-3. Every story gets a `Verify:` line, and every non-trivial story an `Approach:` anchored to the code the research mapped (`file:line`, symbols), so `/seny:implement` can start in a fresh session without exploring again.
-4. If the feature needs an app-wide change (new shared entity, new service, new token, new base component), list it in the plan and ask whether to update `architecture.md` or `design-system.md`. Update it only after a yes.
-5. If `<docs>/project/roadmap.md` exists, set this feature to `in-progress` there (add it if it isn't listed).
-6. Give me the architecture changes in a few lines, the epics and stories (id, title, tests mode, depends on), and the 2–3 decisions you are least sure about.
-7. If the feature has UI (new screens, new components, or a visible change), say so and ask whether to write the design document now. Without UI, stop here and give me the first story to implement (`/clear` first).
-
-### Step 2 — Design (only if I say yes, or the input contains `design`)
-1. Load the design skills that match the stack, as in Project mode.
-2. Start from `<docs>/project/design-system.md` and the existing theme and components: they win over anything new. Use any reference I gave (Figma through a connected tool, screenshots, sites).
-3. If the visual direction is open (no design system yet), give me two options in 3 lines each and a recommendation, and wait.
-4. Write `<docs>/features/<slug>/design.md`. Only the sections the feature needs.
-5. New tokens or base components other features will reuse belong in `design-system.md`: propose them and update it only after my yes.
-6. Update the plan: add the `Design:` line to every UI story, and add or split stories if the design revealed missing work.
-7. Stop. Give me the direction in 2 lines, the screens and new components, what changed in the plan, and the first story to implement.
+2. If the change needs new understanding (new data model, auth, external service, new screens, open requirements), say so and suggest updating the research first.
+3. Update the plan: add, split, reorder, edit or remove `todo` stories, and the Scope, Architecture changes and Key decisions the change touches. Stories that are not `todo` are history: never change their status, criteria, review notes or ticks; if the change affects one, add a new story and say why.
+4. The plan goes back to `draft` and through the loop from step 5 (show me what changed). Next after approval: `/seny:implement next`.

@@ -53,7 +53,27 @@ Seny-driven development is the grandmother in the room. Understand first. Decide
 4. **Review** is done by a separate reviewer agent that never saw the conversation. By default `/seny:implement` calls it on its own and fixes the blockers once.
 5. **You** check it by hand and say "done". Seny commits (if you want) and moves on.
 
-Every phase ends in a document you review before the next one starts. The documents carry the state, not the chat, so you can `/clear` between phases, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
+**One document at a time.** Research and plan never dump five documents on you at once. Each run interviews you (rounds of questions, each with a recommended answer), writes **one** document, and stops for your review. You ask for changes or approve it; Seny proposes a commit and tells you the next command. Nothing builds on a draft. The documents carry the state, not the chat, so you `/clear` between them, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
+
+### Project, epics and stories
+
+Three levels, the agile way, and nothing in between:
+
+```
+Project   product · architecture · design system · roadmap
+ └── Epic    one roadmap row = one folder = one branch = one pull request
+      └── Story   one commit = one implement session
+```
+
+Every epic on the roadmap has a **size**, and the size decides how much planning it gets:
+
+| Size | Stories | Planning |
+|---|---|---|
+| **S** | 1–3 | `/seny:plan <slug>`: one document, one quick round of questions |
+| **M** | 4–8 | `/seny:research <slug>` → `/seny:plan <slug>` |
+| **L** | 9+ | research, then the plan in two passes (shape first, stories after). Or, more seny: split it. |
+
+Starting a whole new app gets the deepest planning of all: product, architecture, design system, roadmap and the foundation plan, each interviewed, written and approved on its own.
 
 ### A story's life
 
@@ -83,12 +103,12 @@ Seny's whole personality is *"how much is enough"*, so it has a command for exac
 | 🟢 **Direct** | A typo, a config value. Not a bug. | Nothing. Just ask Claude. Seny approves. |
 | 🔧 **Fix** | A bug outside any plan | `/seny:fix` |
 | 🧪 **Spike** | "Can this library / device / API even do X?" | `/seny:spike` → then the right track |
-| 🪶 **Light** | One clear change, 1–3 stories | `/seny:plan light` → implement |
-| 🧱 **Feature** | Several stories, open questions, new UI, or risk | `/seny:research` → plan → implement |
+| 🪶 **Light** | One clear change outside the roadmap, 1–3 stories | `/seny:plan light` → implement |
+| 🧱 **Epic** | A capability on the roadmap: several stories, open questions, new UI, or risk | S: `/seny:plan` · M/L: `/seny:research` → `/seny:plan` · then implement |
 | 🌱 **Evolve** | Change *how* the app is built, not *what* it does | `/seny:evolve` → implement |
 | 🏗️ **Project** | A new app, or adopting Seny in an old one | `/seny:init` → research project → plan project |
 
-Some things always bump you up to at least **Feature**: data model changes, auth, payments, personal data, new external services, new screens, undecided requirements, untested legacy code, and anything you can't undo. Rauxa is welcome at the party. Not near the database.
+Some things always bump you up to at least an **Epic** of size M: data model changes, auth, payments, personal data, new external services, new screens, undecided requirements, untested legacy code, and anything you can't undo. Rauxa is welcome at the party. Not near the database.
 
 ---
 
@@ -97,13 +117,13 @@ Some things always bump you up to at least **Feature**: data model changes, auth
 | Command | What it does |
 |---|---|
 | `/seny:init` | Sets Seny up in a project. Detects your stack, commands and repo conventions. Overwrites nothing. Ever. |
-| `/seny:research project <idea>` | New app: vision, users, MVP, constraints → `product.md`. |
-| `/seny:research project` | Existing app: maps the architecture, design system and codebase as they are, and records which checks **already** fail (the baseline). |
+| `/seny:research project <idea>` | New app: a real interview about vision, users, MVP and constraints → `product.md`. |
+| `/seny:research project` | Existing app: maps the codebase (and records which checks **already** fail, the baseline), then the architecture, then the design system, one document per run. |
 | `/seny:research project refresh` | "Do the docs still match the code?" Honest answers only. |
-| `/seny:research <feature>` | Understands one feature against the code and the project docs. |
-| `/seny:spike <question>` | Answers one technical question with throwaway code on a `spike/` branch, and writes the findings into the feature research. The only place where code is allowed to be ugly. |
-| `/seny:plan project` | New app: architecture, design system, roadmap and a `foundation` feature. Existing app: a roadmap. |
-| `/seny:plan <slug> [design]` | Epics and small stories, each with an `Approach` and a `Verify` line, plus a design doc when there's UI. |
+| `/seny:research <epic>` | Understands one epic (sizes M and L) against the code and the project docs. |
+| `/seny:spike <question>` | Answers one technical question with throwaway code on a `spike/` branch, and writes the findings into the epic's research. The only place where code is allowed to be ugly. |
+| `/seny:plan project` | New app: architecture, design system, a roadmap of sized epics, and the `foundation` plan, one document per run. Existing app: a roadmap. |
+| `/seny:plan <slug> [design]` | The epic's plan, as deep as its size: small stories, each with an `Approach` and a `Verify` line. Plus a design doc when there's UI. |
 | `/seny:plan <slug> <change>` | Changes a plan without rewriting history: stories already started stay as they are. |
 | `/seny:plan light <change>` | A tiny plan for a tiny change. |
 | `/seny:implement <id> \| next [no-review]` | One story: builds it, checks it against the baseline, gets it reviewed (one round of fixes if needed), and stops for your "done". |
@@ -139,12 +159,18 @@ Recommended once, for every project: your personal rules in `~/.claude/CLAUDE.md
 
 ```
 /seny:init
-/seny:research project a habit tracker for families, iOS and Android
-/seny:plan project        # architecture, design system, roadmap, foundation
+/seny:research project a habit tracker for families, iOS and Android   # product.md
+/seny:plan project        # architecture.md
+/seny:plan project        # design-system.md
+/seny:plan project        # roadmap.md, every epic sized
+/seny:plan project        # foundation plan: its shape
+/seny:plan project        # foundation plan: its stories
 /seny:implement next      # builds, checks and gets reviewed; you say "done"
 ```
 
-`foundation` is always the first feature: a running, deployed, boringly solid base with nothing product-specific. Like the *pinya* of a human tower: nobody photographs it, but nothing stands without it.
+Each line is one run: questions, a draft, your review, your approval, a commit, a `/clear`. `/seny:plan project` always knows which document comes next.
+
+`foundation` is always the first epic: a running, deployed, boringly solid base with nothing product-specific. Like the *pinya* of a human tower: nobody photographs it, but nothing stands without it.
 
 ### 🏚️ Brownfield: that old repo
 
@@ -175,14 +201,14 @@ docs/                      # or .seny/ in private mode
     baseline.md            # which checks already failed, and at which commit
     architecture.md        # stack, structure, data, decisions, transitions
     design-system.md       # tokens, typography, base components
-    roadmap.md             # features and evolutions, in order
-  features/<slug>/         # one feature (or evolution): builds on project/, never repeats it
-    research.md            # plus spike findings, if any
-    plan.md                # epics and stories with statuses
+    roadmap.md             # epics and evolutions, in order, each with a size
+  epics/<slug>/            # one epic (or evolution): builds on project/, never repeats it
+    research.md            # sizes M and L; plus spike findings, if any
+    plan.md                # a flat list of stories with statuses
     design.md              # only when there's UI
 ```
 
-Want to see them filled in? [examples/poc-a-poc](examples/poc-a-poc/) is a small app halfway through its second feature.
+Want to see them filled in? [examples/poc-a-poc](examples/poc-a-poc/) is a small app halfway through its second epic.
 
 ---
 
@@ -201,16 +227,19 @@ Some promises are too important to leave to good intentions, so Seny ships a sma
 
 Spec-driven methods can get *hungry*. Seny is on a diet:
 
-- **Proportional tracks.** Most changes never touch research. Bugs go straight to `/seny:fix`. Typos go nowhere at all.
-- **Short documents.** Research is one page. Plans are lists of small stories, not novels. The baseline is one table.
+- **Proportional tracks and sizes.** Most changes never touch research. Size-S epics get one short document. Bugs go straight to `/seny:fix`. Typos go nowhere at all.
+- **Short documents.** Research is one page. Plans are flat lists of small stories that point to `architecture.md` instead of repeating it. The baseline is one table.
 - **Plans that remember the how.** Every story carries its `Approach`, so implementing it in a fresh session doesn't mean exploring the code all over again.
 - **Loaded on demand.** Skills and templates enter the context only when you call them, one template per document. The design template sleeps until you design something.
 - **Your stack only when it matters.** Your stack choices live in `~/.claude/seny/stack.md`, read only when a new app is planned, not in every session.
 - **No persona theatre.** No simulated meeting between a PM, an architect and a scrum master agreeing with each other. One model, one job per phase.
+- **One document per run, then `/clear`.** Each run starts light and reads only the approved documents it builds on, instead of dragging a whole planning conversation along.
 - **Docs instead of chat history.** State lives in files, so `/clear` is free and long sessions don't drag a novel of context around.
-- **State that stays small.** Every command starts with a snapshot of the project, and finished work collapses into one line. Feature number 40 costs the same as feature number 2.
+- **State that stays small.** Every command starts with a snapshot of the project, and finished work collapses into one line. Epic number 40 costs the same as epic number 2.
 - **Explore subagents for big sweeps.** They read the haystack and return only the needle.
 - **Read only what the story needs.** Not the whole repo "just in case".
+
+Where Seny *does* spend tokens on purpose is planning a new app: product and architecture get a proper interview. That's the one place where an hour of questions saves days of rework.
 
 ---
 
@@ -231,7 +260,7 @@ Spec-driven methods can get *hungry*. Seny is on a diet:
 
 | | 🧘 Seny | 🏛️ Big agentic frameworks | 🎲 Vibe coding |
 |---|---|---|---|
-| Process | Proportional to the change | Can scale to full planning suites | "We'll see" |
+| Process | Proportional to the change, one reviewed document at a time | Can scale to full planning suites | "We'll see" |
 | Size | 9 skills, 1 agent, 1 hook | Many modules, agents and roles | One prompt and a prayer |
 | Tokens | On a diet | Hungry | Unpredictable |
 | Old codebases | Baseline, characterization tests, evolutions | Varies | 🔥 |

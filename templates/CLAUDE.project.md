@@ -32,8 +32,9 @@ Project-specific rules. Personal defaults (language, git, stack, TypeScript, tes
 - Seny docs: `docs`
 - Seny review: auto
 - `<docs>/project/` is app-wide: `product.md`, `codebase.md`, `baseline.md`, `architecture.md`, `design-system.md`, `roadmap.md`. Read `architecture.md` before changing structure, state or boundaries, and `design-system.md` before UI work.
-- `<docs>/features/<slug>/` is one feature: `research.md`, `plan.md`, `design.md`. The plan is the source of truth; if reality contradicts it, stop and propose a change.
-- Story statuses: `todo` → `in-progress` → `review` → `done`. Only I move a story to `done`. One story = one commit.
+- `<docs>/epics/<slug>/` is one epic (a roadmap row: one branch, one PR): `plan.md`, plus `research.md` and `design.md` when its size or UI needs them. The plan is the source of truth; if reality contradicts it, stop and propose a change.
+- Documents are `draft` until I approve them; nothing builds on a draft. One document per run, `/clear` between them.
+- Story statuses: `todo` → `in-progress` → `review` → `done`. Only I move a story to `done`. One story = one commit = one session.
 - Only new check failures block: `baseline.md` lists the old ones. Untested code gets characterization tests before it changes.
 - Areas **In transition** in `architecture.md`: new code uses the target pattern, never the old one.
 - App-wide doc changes only after my yes. Not sure what's next: `/seny:help`.

@@ -15,7 +15,7 @@ Notes: $ARGUMENTS
 
 ## Rules
 - Never overwrite or rewrite existing content. Existing instructions win: you add to them, and you show me the exact text before writing it.
-- Never migrate anything here (package manager, tooling, folders). If something should change, note it as a candidate feature.
+- Never migrate anything here (package manager, tooling, folders). If something should change, note it as a candidate epic.
 - Ask all your questions in one batch.
 
 ## Steps
@@ -36,9 +36,9 @@ Notes: $ARGUMENTS
    - **Shared mode**:
      - No `CLAUDE.md` → create it from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.project.md`, filled in with what you detected. Leave `<placeholders>` only for what you couldn't detect (Project description, Product rules).
      - Existing `CLAUDE.md` → append the template's `## Seny` section, plus any detected command or convention it doesn't already state. Show me the section before appending.
-     - Create `docs/project/` and `docs/features/` with a `.gitkeep` each.
+     - Create `docs/project/` and `docs/epics/` with a `.gitkeep` each.
    - **Private mode**:
-     - Create `.seny/project/` and `.seny/features/`.
+     - Create `.seny/project/` and `.seny/epics/`.
      - Write the filled template to `.seny/CLAUDE.md`.
      - Make Claude Code load it in every session: add the line `@.seny/CLAUDE.md` to `CLAUDE.local.md` at the repo root (create it if missing; if it exists, show me the line before appending).
      - Append `.seny/` and `CLAUDE.local.md` to `.git/info/exclude`. Nothing tracked changes.
@@ -48,4 +48,4 @@ Notes: $ARGUMENTS
 5. **Personal defaults**: if `~/.claude/CLAUDE.md` doesn't exist, offer to copy `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.personal.example.md` there as a starting point I'll edit. If `~/.claude/seny/stack.md` doesn't exist, offer the same with `${CLAUDE_PLUGIN_ROOT}/templates/stack.example.md` (stack choices for new apps, read only by `/seny:plan project`). Never touch files that exist.
 6. **Stop.** Tell me what you created (paths), what you couldn't detect, and the next step:
    - Existing code → `/seny:research project` (analyses the codebase, records the checks baseline).
-   - New project → `/seny:research project <the app idea>`.
+   - New project → `/seny:research project <the app idea>`. Fill only what you detected in the project rules: Stack, Commands and Product rules stay as placeholders until `/seny:plan project` approves the architecture and fills them.

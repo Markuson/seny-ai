@@ -1,19 +1,32 @@
 # roadmap.md
 
-Format for `<docs>/project/roadmap.md` (`<docs>` is the Seny docs root). App-wide: feature docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
+Format for `<docs>/project/roadmap.md` (`<docs>` is the Seny docs root). App-wide: epic docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
 
 ```markdown
 # Roadmap
 
-| # | Feature | Type | Goal | Depends on | Status |
-|---|---|---|---|---|---|
-| 1 | foundation | feature | Base app running and deployed | — | `todo` |
-| 2 | <slug> | feature | <one line> | foundation | `todo` |
-| 3 | <slug> | evolution | <one line> | — | `todo` |
+Status: <draft | approved (YYYY-MM-DD)>
+
+| # | Epic | Type | Size | Goal | Depends on | Status |
+|---|---|---|---|---|---|---|
+| 1 | foundation | epic | L | Base app running and deployed | — | `todo` |
+| 2 | <slug> | epic | <S/M/L> | <one line> | foundation | `todo` |
+| 3 | <slug> | evolution | <S/M/L> | <one line> | — | `todo` |
 
 ## Later
 - <ideas outside the MVP>
 ```
 
-Types: `feature` (new behaviour: `/seny:research` → `/seny:plan`) or `evolution` (how the app is built: `/seny:evolve`).
+Each row is an **epic**: one deliverable capability, one branch, one pull request, its own folder in `<docs>/epics/<slug>/`.
+
+Types: `epic` (new behaviour) or `evolution` (how the app is built: `/seny:evolve`).
+
+Size decides how much planning the epic gets:
+
+| Size | Stories | Process |
+|---|---|---|
+| S | 1–3 | `/seny:plan <slug>` only, one pass |
+| M | 4–8 | `/seny:research <slug>` → `/seny:plan <slug>` |
+| L | more than 8 | research, then the plan in two passes (shape, then stories); consider splitting it |
+
 Statuses: `todo`, `in-progress`, `done`. A row is `done` when every story in its plan is `done`.

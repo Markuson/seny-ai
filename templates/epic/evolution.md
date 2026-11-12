@@ -1,12 +1,13 @@
 # Evolution templates
 
-An evolution changes how the app is built, not what it does: a framework or SDK upgrade, a JavaScript → TypeScript migration, unifying patterns, swapping a library, restructuring folders or packages. It lives in `<docs>/features/<slug>/` like a feature, with `Type: evolution` in its plan.
+An evolution changes how the app is built, not what it does: a framework or SDK upgrade, a JavaScript → TypeScript migration, unifying patterns, swapping a library, restructuring folders or packages. It lives in `<docs>/epics/<slug>/` like any epic, with `Type: evolution` in its plan.
 
 ## research.md (evolution)
 
 ```markdown
 # <Evolution name> — research
 
+Status: <draft | approved (YYYY-MM-DD)>
 Type: evolution
 Kind: <upgrade | migration | unify pattern | library swap | restructure>
 
@@ -41,12 +42,12 @@ Recommendation: <option and why>
 
 ## plan.md specifics (evolution)
 
-Use the feature plan format (`templates/feature/plan.md`) with:
+Use the plan format (`templates/epic/plan.md`) with:
 - `Type: evolution` under the title.
-- E1 starts with **characterization tests** for the areas that will change (skip only where coverage is already good).
+- The first stories are **characterization tests** for the areas that will change (skip only where coverage is already good).
 - Every story leaves the app working and the checks no worse than the baseline.
 - Stories move the footprint in measurable slices ("migrate the cart module"), each with a `Progress:` line (`3/11 modules`).
-- The last epic is **cleanup**: remove the old pattern, the adapter, flags and dependencies; update the docs.
+- The last stories are **cleanup**: remove the old pattern, the adapter, flags and dependencies; update the docs.
 - Acceptance criteria include "no behaviour change" where that is the point, proven by the characterization tests.
 
 ## architecture.md — "In transition" section

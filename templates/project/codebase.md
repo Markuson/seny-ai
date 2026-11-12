@@ -1,6 +1,6 @@
 # codebase.md
 
-Format for `<docs>/project/codebase.md` (`<docs>` is the Seny docs root). App-wide: feature docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
+Format for `<docs>/project/codebase.md` (`<docs>` is the Seny docs root). App-wide: epic docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
 
 The existing code as it is. Written by `/seny:research project` on an existing codebase and updated by `refresh`.
 
@@ -8,6 +8,8 @@ Describe the code as it is, inconsistencies included. Problems go here as debt a
 
 ```markdown
 # <Project name> — codebase
+
+Status: <draft | approved (YYYY-MM-DD)>
 
 Analysed: <YYYY-MM-DD> at commit <short sha>
 

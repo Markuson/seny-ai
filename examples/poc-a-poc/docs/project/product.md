@@ -1,5 +1,7 @@
 # Poc a poc — product
 
+Status: approved (2026-10-20)
+
 Source: the idea in chat, plus three conversations with parents (notes in chat)
 
 ## Vision
@@ -40,4 +42,4 @@ A calm habit tracker a whole family uses together. Small daily habits ("read 10 
 - (assumption) One family per person is enough for the MVP.
 
 ## Open questions
-- ~~Can reminders be scheduled locally, without a server?~~ Answered by a spike, see `features/streaks/research.md`.
+- ~~Can reminders be scheduled locally, without a server?~~ Answered by a spike, see `epics/streaks/research.md`.

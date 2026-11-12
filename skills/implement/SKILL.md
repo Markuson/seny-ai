@@ -1,7 +1,7 @@
 ---
 name: implement
-description: Seny phase 3. Implement one story from a plan (or fix its review findings) with TDD where the story asks for it, run the checks against the baseline, and get it reviewed by the independent reviewer (automatic unless the review mode is manual).
-argument-hint: "<story id, e.g. E1-S2> | next [no-review]"
+description: Seny phase 3. Implement one story from an approved epic plan (or fix its review findings) with TDD where the story asks for it, run the checks against the baseline, and get it reviewed by the independent reviewer (automatic unless the review mode is manual).
+argument-hint: "[<epic slug>] <story id, e.g. S2> | next [no-review]"
 disable-model-invocation: true
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh) Bash(git status *) Bash(git diff) Bash(git diff HEAD*) Bash(git diff --stat*) Bash(git branch --show-current) Bash(git rev-parse *)
 ---
@@ -13,10 +13,11 @@ Target: $ARGUMENTS
 ## State
 !`bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh`
 
-`<docs>` below is the docs root printed above. Project rules: the files listed under "Project rules" above (already in your context). Story format: `${CLAUDE_PLUGIN_ROOT}/templates/feature/plan.md`, only if you need it.
+`<docs>` below is the docs root printed above. Project rules: the files listed under "Project rules" above (already in your context). Story format: `${CLAUDE_PLUGIN_ROOT}/templates/epic/plan.md`, only if you need it.
 
 ## Rules
-- Find the plan in `<docs>/features/*/plan.md`. If more than one plan has unfinished stories and the target doesn't make it clear, ask which feature.
+- Find the plan in `<docs>/epics/*/plan.md`. A story id alone (`S2`) refers to the epic in progress; if more than one epic has unfinished stories and the target doesn't say which (`<slug> S2`), ask.
+- The plan must be `Status: approved`. If it is `draft` or `shape approved`, stop and tell me which `/seny:plan` run finishes it.
 - `next` means the first `todo` story whose dependencies are all `done`.
 - Work on ONE story. Stay inside its scope. If you need to touch something outside it, or the plan turns out to be wrong, stop and propose a plan change (`/seny:plan <slug> <change>`) instead of improvising.
 - Keep the change small. Follow existing patterns. No new dependency without asking.

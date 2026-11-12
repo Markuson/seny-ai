@@ -1,7 +1,7 @@
 ---
 name: review
 description: Seny phase 4. Have the independent seny reviewer check one story in review, record the findings in the plan, and move the story to done (with my approval) or back to in-progress. Also closes a story that was already approved.
-argument-hint: "[story id] [done | git range, if already committed]"
+argument-hint: "[<epic slug>] [story id] [done | git range, if already committed]"
 disable-model-invocation: true
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh) Bash(git status *) Bash(git diff --stat*) Bash(git diff --name-only*) Bash(git log *)
 ---

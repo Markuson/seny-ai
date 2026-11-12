@@ -1,11 +1,12 @@
 # architecture.md
 
-Format for `<docs>/project/architecture.md` (`<docs>` is the Seny docs root). App-wide: feature docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
+Format for `<docs>/project/architecture.md` (`<docs>` is the Seny docs root). App-wide: epic docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
 
 ```markdown
 # Architecture
 
-Last updated: <YYYY-MM-DD> by <feature slug, "project plan", "codebase analysis" or "BMAD import">
+Status: <draft | approved (YYYY-MM-DD)>
+Last updated: <YYYY-MM-DD> by <epic slug, "project plan" or "codebase analysis">
 Design system: <`design-system.md` | declined on <YYYY-MM-DD> | not applicable (no UI)>
 
 <In a brownfield project this describes the code as it is, with real versions from package.json.>
@@ -41,7 +42,7 @@ Design system: <`design-system.md` | declined on <YYYY-MM-DD> | not applicable (
 <only app-wide rules that differ from or add to the personal and project rules: naming, error handling, routing>
 
 ## In transition
-<Only while an evolution is open (see `templates/feature/evolution.md`). Omit otherwise.>
+<Only while an evolution is open (see `templates/epic/evolution.md`). Omit otherwise.>
 | Area | From | To | Rule for new code | Progress | Evolution |
 |---|---|---|---|---|---|
 

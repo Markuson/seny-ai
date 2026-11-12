@@ -1,5 +1,7 @@
 # Streaks — design
 
+Status: approved (2026-11-03)
+
 Platform: mobile (React Native + Expo)
 References: none beyond the design system
 
@@ -54,5 +56,5 @@ No new tokens: the badge uses `color.accent` on `color.surface`.
 ## Story mapping
 | Section | Stories |
 |---|---|
-| screen-today | E1-S3 |
-| screen-habit-settings | E2-S1 |
+| screen-today | S3 |
+| screen-habit-settings | S4 |

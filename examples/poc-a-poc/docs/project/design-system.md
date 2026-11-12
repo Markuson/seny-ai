@@ -1,5 +1,6 @@
 # Design system
 
+Status: approved (2026-10-22)
 Platform: mobile (React Native + Expo)
 References: Finch (tone), Streaks (speed)
 

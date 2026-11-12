@@ -1,11 +1,13 @@
 # Design document template
 
-Write `<docs>/features/<slug>/design.md` with the sections below. Omit what the feature doesn't need. Be concrete: values, names and states, not adjectives.
+Write `<docs>/epics/<slug>/design.md` with the sections below. Omit what the epic doesn't need. Be concrete: values, names and states, not adjectives.
 
-If `<docs>/project/design-system.md` exists, the feature design builds on it: no Direction section (link to it instead), and Tokens and Components list only what is new. Anything new that other features will reuse is proposed for `design-system.md`, not kept here.
+If `<docs>/project/design-system.md` exists, the epic design builds on it: no Direction section (link to it instead), and Tokens and Components list only what is new. Anything new that other epics will reuse is proposed for `design-system.md`, not kept here.
 
 ```markdown
-# <Feature name> — design
+# <Epic name> — design
+
+Status: <draft | approved (YYYY-MM-DD)>
 
 Platform: <web (Astro | Next.js) | mobile (React Native + Expo) | both>
 References: <links, screenshots, Figma frames, or "none">
@@ -59,5 +61,5 @@ Only new or changed tokens; reuse the existing theme. Name them semantically and
 ## Story mapping
 | Section | Stories |
 |---|---|
-| screen-<name> | E1-S2, E1-S3 |
+| screen-<name> | S2, S3 |
 ```

@@ -1,11 +1,13 @@
 # product.md
 
-Format for `<docs>/project/product.md` (`<docs>` is the Seny docs root). App-wide: feature docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
+Format for `<docs>/project/product.md` (`<docs>` is the Seny docs root). App-wide: epic docs build on it and never repeat it. Be concrete: names, versions, values. Omit sections that don't apply.
 
 What the product is and for whom. Written by `/seny:research project <idea>` for a new app. Existing codebases may skip it or add it later.
 
 ```markdown
 # <Product name> — product
+
+Status: <draft | approved (YYYY-MM-DD)>
 
 Source: <the idea in chat | brief file path | BMAD PRD path>
 
