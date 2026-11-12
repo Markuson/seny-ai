@@ -229,7 +229,7 @@ Some promises are too important to leave to good intentions, so Seny ships a sma
 Spec-driven methods can get *hungry*. Seny is on a diet:
 
 - **Proportional tracks and sizes.** Most changes never touch research. Size-S epics get one short document. Bugs go straight to `/seny:fix`. Typos go nowhere at all.
-- **Short documents, with a budget.** Research is one page. Plans are flat lists of small stories that point to `architecture.md` instead of repeating it. Raw material lives in `inputs/` and is read only on demand. Small epics read their roadmap notes, not the whole product document.
+- **Short documents, without a straitjacket.** Research is one page. Plans are flat lists of small stories that point to `architecture.md` instead of repeating it. Raw material lives in `inputs/` and is read only on demand. Small epics read their roadmap notes, not the whole product document.
 - **Plans that remember the how.** Every story carries its `Approach`, so implementing it in a fresh session doesn't mean exploring the code all over again.
 - **Loaded on demand.** Skills and templates enter the context only when you call them, one template per document. The design template sleeps until you design something.
 - **Your stack only when it matters.** Your stack choices live in `~/.claude/seny/stack.md`, read only when a new app is planned, not in every session.

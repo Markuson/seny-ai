@@ -7,7 +7,7 @@ All notable changes to Seny. Versions follow [semver](https://semver.org/): whil
 Lessons from the first real project: smaller documents, cheaper runs, tighter rails, and tests for Seny itself.
 
 ### Added
-- **Size budgets** for every document, checked before hand-over, and `<docs>/project/inputs/` for reference material (inventories, briefs, content) that documents link to instead of containing.
+- **Size guide** for every document (typical sizes, never limits): a clearly longer draft comes with the reason and a choice (keep, move raw material to `<docs>/project/inputs/`, or trim named parts); nothing is cut without your say.
 - **Epic notes** in the roadmap: up to three lines per epic, so a size-S plan reads its row and notes instead of the whole product document.
 - Interview answers are saved in the draft after each round; an interrupted interview resumes.
 - `tests/run.sh` (guard, state snapshot, repo lint) and a CI workflow on Linux and macOS.

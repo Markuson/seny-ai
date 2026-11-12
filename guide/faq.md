@@ -15,7 +15,7 @@ Questions people ask, and what to do when something surprises you. Can't find yo
 Because the plan is where everything gets decided, and a mistake there costs the most later. One document per run means you review each decision while it's small, the next document builds only on approved ones, and every run starts with a clean context after `/clear`. It's slower per document and faster per project.
 
 **My documents are getting long.**
-Each document has a size budget and Seny checks it before showing you a draft. If one grew anyway, ask for a trim: decisions stay, raw material (inventories, pasted content, long comparisons) moves to `docs/project/inputs/` with a link.
+Long isn't wrong: some products need the detail. Each document has a typical size, and when a draft is clearly longer Seny says why and offers to keep it, move raw material (inventories, pasted content, long comparisons) to `docs/project/inputs/`, or trim specific parts. You choose; it never cuts decisions on its own.
 
 **Can I make it go faster?**
 Yes, three ways. Say "go ahead" during an interview and Seny stops asking and writes with its recommended answers. Size epics honestly: an S epic skips research and gets at most one round of questions. And changes outside the roadmap can use `/seny:plan light`.

@@ -27,20 +27,20 @@ Seny's planning is proportional: how hard you interview me depends on what the d
    - After each round, save my answers in the document file itself: `Status: draft` and a temporary `## Answers so far` section. A session that dies mid-interview loses nothing.
    - Don't ask what the inputs or the code already answer. Don't ask what only a later document needs: note it where that document will find it (an epic's detail goes to its **epic notes** in `roadmap.md`, or to a list in your hand-over if there is no roadmap yet).
    - Stop when the remaining unknowns wouldn't change this document, or when I say to go ahead. If something is still unknown after the rounds the table allows, it becomes an open question in the document.
-4. **Draft.** Write the document from its template with `Status: draft`, replacing `## Answers so far`. Only this document; nothing else in `<docs>` changes, except reference material you move to `<docs>/project/inputs/` (see the size budget).
-5. **Self-check** before showing it to me, with the size budget and the checklist below. Fix what fails.
-6. **Hand over.** The path, a 3–5 line summary, the 2–3 points you're least sure about, and the open questions. Then: "Review it and tell me what to change, or say it's approved."
+4. **Draft.** Write the document from its template with `Status: draft`, replacing `## Answers so far`. Only this document; nothing else in `<docs>` changes.
+5. **Self-check** before showing it to me, with the checklist below (fix what fails) and the size guide (which only produces a note for the hand-over).
+6. **Hand over.** The path, a 3–5 line summary, the 2–3 points you're least sure about, the open questions, and the size note if there is one. Then: "Review it and tell me what to change, or say it's approved."
 7. **Changes.** Apply what I ask, and what follows from it in the same document. The status stays `draft`. Tell me what changed, then step 6 again.
 8. **Approved.** Set `Status: approved (YYYY-MM-DD)` (in a shape pass: `shape approved (YYYY-MM-DD)`). Run the after-approval step the caller lists, if any. Propose a commit message, `docs: <add | update> <document> for <project or epic>`, and apply my commit rule: commit if I told you to, don't if I told you not to, otherwise ask. Never push.
 9. **Next.** Tell me the next command and suggest `/clear` before it. If this was the last document before implementation, say so plainly: "Planning is done. Next: `/clear`, then `/seny:implement next`."
 
 An approved document that changes later (Change mode, a refresh) goes back to `draft` and through steps 6–8 again.
 
-## Size budget
+## Size guide
 
-Documents are read again and again by later runs, so every line costs tokens many times. Budgets, as a guide:
+Documents are read again and again by later runs, so every line costs tokens many times. But a document that leaves out a decision costs more: the length has to fit the content, not a number. These are typical sizes, a guide and never a limit:
 
-| Document | Budget |
+| Document | Typical size |
 |---|---|
 | `product.md` | ~120 lines |
 | `architecture.md` | ~150 lines |
@@ -50,7 +50,10 @@ Documents are read again and again by later runs, so every line costs tokens man
 | `plan.md` | ~15 lines per story, ~40 for everything above the stories |
 | `design.md` | ~40 lines per screen |
 
-A document holds **decisions and what they rest on**, not raw material. Inventories, content dumps, long comparisons, transcripts of what an old system does, pasted briefs: move them to `<docs>/project/inputs/<name>.md` (no status, never loaded by default) and link them from the line that needs them. Over budget after that → say so at hand-over and tell me what you'd cut.
+- **Never cut on your own to fit the guide**, and never drop a decision, a constraint or an acceptance criterion for size.
+- **Raw material is the exception, and still my call**: inventories, content dumps, long comparisons, transcripts of what an old system does, pasted briefs. If the draft carries them, propose moving them to `<docs>/project/inputs/<name>.md` (no status, never loaded by default), linked from the line that needs them.
+- **Clearly longer than typical** → at hand-over, say so in one line with the reason ("210 lines: 14 screens and three user roles"), and give me the choice: keep it as it is (your recommendation when the detail is needed), move specific sections to `inputs/`, or trim specific parts (name them). Change nothing until I choose.
+- **Clearly shorter than typical** is fine when the self-check passes. If it's short because things are still unknown, say which, and whether another round of questions would fill them.
 
 ## Self-check per document
 
