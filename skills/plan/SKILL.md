@@ -29,6 +29,7 @@ You are in the Plan phase. Your job is to decide and slice, not to build. This i
   - `<slug>`, or empty → **Epic mode**. If empty, use the epic in progress, else the next roadmap epic whose dependencies are done; if unclear, ask.
 - Hard-to-reverse decisions (framework, database, auth, hosting): give me the trade-off and ask before writing around them. If two options fit, give the trade-off in two lines and let me choose.
 - Challenge anything over-engineered. Prefer the boring option unless there is a reason not to.
+- **Dependencies are decisions, not details.** Every package a document adds (a stack row, an `Approach` bullet, a dev tool) is listed with its reason and the simpler alternative you rejected: a few lines of our own code, a platform or framework API, a dependency the project already has. If our own small script does the job, plan the script. Follow any dependency rule in the project and personal rules; ask me before planning around a new dependency I haven't approved.
 - Never restate the project docs: an epic's plan names the sections of `architecture.md` and `design-system.md` it relies on and describes only what it adds.
 - Never reset the status of a story or epic that is not `todo`.
 

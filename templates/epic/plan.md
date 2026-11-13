@@ -23,6 +23,7 @@ Research: <`research.md` | none (S) | none (light) | `../../project/product.md` 
 - Structure: <new folders, modules, routes or screens>
 - Data and state: <new entities and fields, server vs local state, queries>
 - Boundaries: <new external APIs, auth rules, where input is validated>
+- Dependencies: <new package — why it is needed — rejected: our own script / platform API / existing dependency; or "none">
 - App-wide changes: <changes to architecture.md or design-system.md, approved or pending>
 
 ## Key decisions

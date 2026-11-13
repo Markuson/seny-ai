@@ -20,7 +20,7 @@ Target: $ARGUMENTS
 - The plan must be `Status: approved`. If it is `draft` or `shape approved`, stop and tell me which `/seny:plan` run finishes it.
 - `next` means the first `todo` story whose dependencies are all `done`.
 - Work on ONE story. Stay inside its scope. If you need to touch something outside it, or the plan turns out to be wrong, stop and propose a plan change (`/seny:plan <slug> <change>`) instead of improvising.
-- Keep the change small. Follow existing patterns. No new dependency without asking.
+- Keep the change small. Follow existing patterns. Install only the dependencies the plan lists in `Dependencies:`; any other one, even a dev tool, needs my yes first, with its reason and the simpler alternative.
 - Never push. The commit happens when I confirm the story is `done`.
 - **Review mode**: printed in the state above (default `auto`). It is `manual` for this run if the target contains `no-review` or I asked you not to review in this session.
 - **Heavy context**: if your context gets heavy before the story is finished, write the story's `Notes:` line (done so far, decisions taken, next step), keep it `in-progress`, and tell me to `/clear` and run `/seny:implement <story id>` again.

@@ -23,6 +23,9 @@ Design system: <`design-system.md` | declined on <YYYY-MM-DD> | not applicable (
 | CMS | <none | Keystatic | Payload | Strapi> | |
 | Hosting | <Vercel | Cloudflare | EAS | ...> | |
 
+## Dependencies
+<Only packages beyond the stack table that matter (UI kits, date or i18n libraries, test and lint tooling): name — why — rejected alternative. Everything here was approved; anything new goes through a plan.>
+
 ## Structure
 <repo layout: monorepo or single app; main folders and what lives in each>
 

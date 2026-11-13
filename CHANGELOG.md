@@ -2,6 +2,12 @@
 
 All notable changes to Seny. Versions follow [semver](https://semver.org/): while Seny is `0.x`, minor versions may change commands or document formats.
 
+## [0.6.1] — 2026-11-13
+
+### Fixed
+- Dependencies were only checked at implement and review time, so plans could fill `Approach` bullets with packages unchallenged. Now plans and the architecture list every new package with its reason and the simpler alternative rejected (own script, platform API, existing dependency); the self-check enforces it; implement installs only what the plan lists; the reviewer blocks unlisted packages.
+- The personal rules template has a minimal-dependencies rule (moved from the stack template, where it only applied when planning a new app).
+
 ## [0.6.0] — 2026-11-12
 
 Lessons from the first real project: smaller documents, cheaper runs, tighter rails, and tests for Seny itself.

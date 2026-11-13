@@ -31,6 +31,7 @@ Stack choices for new projects live in `~/.claude/seny/stack.md` (see `templates
 ## Code organisation
 - Small components with a single responsibility.
 - Composition over configuration. No premature abstractions.
+- Minimal dependencies: don't install a package when a simple script of our own does the job. When one is needed, say why.
 - Shared code lives in clear folders: `components`, `layouts`, `lib`, `utils`.
 - Follow the patterns already in the codebase before introducing new ones.
 - No TODOs, commented-out code or dead code in a commit.

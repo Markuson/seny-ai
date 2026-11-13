@@ -20,7 +20,6 @@ TypeScript always, in strict mode.
   - **Server state** (anything that comes from a backend) → TanStack Query. Never copy it into a client store.
   - **Client state** shared across components → Zustand by default. Redux Toolkit when the state is large and complex (many slices, middleware, devtools time-travel) or the project already uses it.
   - Local UI state stays in `useState` / `useReducer`. Don't add a store until state really needs to be shared.
-- Don't add dependencies until they are needed, and say why each one is needed.
 
 ## Backend (new projects only)
 I do little backend; keep it as small as the project allows. Pick the first option that covers the need:
