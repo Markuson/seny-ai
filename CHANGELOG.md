@@ -2,6 +2,19 @@
 
 All notable changes to Seny. Versions follow [semver](https://semver.org/): while Seny is `0.x`, minor versions may change commands or document formats.
 
+## [0.7.0] — 2026-11-20
+
+Faster when you want it, clearer when you come back.
+
+### Added
+- **Rauxa mode**: write a whole plan, a whole epic or the whole project in one run, with one interview and one review (`[R]` at the start of a run or at a hand-over, or `all`: `/seny:plan project all`). Hard-to-reverse decisions are still asked, it stops instead of inventing, everything stays draft until approved, and an approved batch is one commit. `references/rauxa.md`.
+- **Commit summary** before every commit (story, fix, spike, document, Rauxa batch): what changed, decisions taken, the review, and what you should review by hand and where. Built from git and the plan, in the chat. `references/commit-summary.md`.
+- **Quick answers** at decision points: `[S]`/`[R]` when a run starts, `[A] [C] [Q] [R]` at a hand-over, `[D] [F] [W]` after a review, `[C] [E] [N]` at a commit. The interview keeps Claude Code's question form.
+
+### Changed
+- **`/seny:help` rewritten**: with no arguments (or "where are we") it shows where you are, the last thing done, the recommended next step and numbered options for what it can help with now. `summary` rebuilds the commit summary of any story or document, with a numbered picker. Questions about the method are answered from the guide. Request sizing moved to `references/help-sizing.md`, loaded only when needed.
+- `scripts/recent.sh`: the last commits, for help.
+
 ## [0.6.1] — 2026-11-13
 
 ### Fixed

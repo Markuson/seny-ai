@@ -2,7 +2,7 @@
 
 Every Seny command, with the same shape each time: how to call it, when to use it, what it reads and writes, what it asks you, and where it stops. For the ideas behind them, see [concepts](concepts.md).
 
-All commands start by reading the [state snapshot](concepts.md#the-state-snapshot), and none of them ever pushes. `<docs>` means your docs root: `docs/` or `.seny/`. Research, plan and evolve write **one document per run**, through the [document loop](concepts.md#one-document-at-a-time): questions (saved as you answer), draft, your review, approval, commit proposal, and the next command after a `/clear`. Project documents are written on the default branch; an epic's documents on its own branch.
+All commands start by reading the [state snapshot](concepts.md#the-state-snapshot), and none of them ever pushes. `<docs>` means your docs root: `docs/` or `.seny/`. Research, plan and evolve write **one document per run** (or several, if you choose [Rauxa mode](concepts.md#rauxa-mode)), through the [document loop](concepts.md#one-document-at-a-time): questions (saved as you answer), draft, your review, approval, commit proposal, and the next command after a `/clear`. Project documents are written on the default branch; an epic's documents on its own branch.
 
 | Command | One line |
 |---|---|
@@ -16,7 +16,7 @@ All commands start by reading the [state snapshot](concepts.md#the-state-snapsho
 | [`/seny:review`](#seny-review) | Review again, or close an approved story |
 | [`/seny:fix`](#seny-fix) | Fix a bug outside any plan |
 | [`/seny:evolve`](#seny-evolve) | Change how the app is built, step by step |
-| [`/seny:help`](#seny-help) | Where am I, what next, how much process |
+| [`/seny:help`](#seny-help) | Where am I, what was done, what next, summaries, how much process, questions |
 
 ---
 
@@ -274,12 +274,35 @@ When you confirm "done" (here or at the end of `/seny:implement`):
 
 ## `/seny:help`
 
-**Usage:** `/seny:help [what you want to do]`
+**Usage:** `/seny:help [where are we | summary [<slug> <S#> | <document>] | what you want to do | a question]`
 
-**Without arguments** it tells you where you are and the one next step, checking in this order: setup missing, a story waiting in `review`, a story `in-progress`, a document still in `draft`, the next pending project document, an epic without an approved plan (research first for sizes M and L), a missing design, the next ready story, blocked stories, the next roadmap epic. It also mentions a stale baseline, stale docs and open transitions.
+Read-only. It can't run other commands for you (they only start when you type them), so options that need one come with the exact command to copy; options that only need information it answers itself.
 
-**With a request** it sizes the work (Direct, Fix, Spike, Light, Epic S/M/L, Evolve or Project), says why in one line, and gives you the exact commands.
+**Empty, or "where are we" in any words:**
 
-**Output:** where you are · track · the next command · the 2–3 steps after it · anything to watch out for.
+```
+Where you are
+  marcuson.dev · branch feature/foundation
+  Planning: product ✓ architecture ✓ design system ✓ roadmap ✓
+  Epic foundation (L): plan approved · 3/9 stories done · S4 in progress
+Last done
+  S3 · Unit and E2E test tooling — done, committed 2h ago (a1b2c3d)
+Next (recommended)
+  S4 · Tailwind 4, theme tokens and Fira Code — resume from its Notes
+  → /seny:implement foundation S4
 
-**Never:** edits files or runs other Seny commands for you. It's read-only by design (the file tools are disabled while it runs).
+What I can help with now
+  [1] Continue S4 (recommended)
+  [2] Summary of the last story (S3)
+  [3] See the roadmap and what comes after foundation
+  [4] Change the foundation plan
+  [5] Something else: a bug, an idea, a question
+```
+
+Only what fits right now is offered. It checks, in order: setup missing, a story in `review`, a story `in-progress`, a document in `draft`, the next pending project document, an epic without an approved plan, a missing design, the next ready story, blocked stories, the next roadmap epic. It also warns about a stale baseline, drafts something depends on, docs that contradict the code and open transitions.
+
+**`summary`:** rebuilds the [commit summary](concepts.md#quick-answers-and-commit-summaries) of a story, fix or document from git and the plan. With an id (`summary foundation S3`, `summary architecture`) it goes straight there; without one it offers the recent ones as numbered choices.
+
+**Something you want to do:** sizes it (Direct, Fix, Spike, Light, Epic S/M/L, Evolve or Project), says why in one line, and gives the steps, with the first one as option `[1]`.
+
+**A question about Seny** ("what's the baseline?"): answers from this guide, briefly, pointing to the section to read more.

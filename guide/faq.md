@@ -18,13 +18,16 @@ Because the plan is where everything gets decided, and a mistake there costs the
 Long isn't wrong: some products need the detail. Each document has a typical size, and when a draft is clearly longer Seny says why and offers to keep it, move raw material (inventories, pasted content, long comparisons) to `docs/project/inputs/`, or trim specific parts. You choose; it never cuts decisions on its own.
 
 **Can I make it go faster?**
-Yes, three ways. Say "go ahead" during an interview and Seny stops asking and writes with its recommended answers. Size epics honestly: an S epic skips research and gets at most one round of questions. And changes outside the roadmap can use `/seny:plan light`.
+Yes. **Rauxa mode** writes a whole plan, epic or project in one run (`[R]` at the start or at a hand-over, or `all`: `/seny:plan project all`). Besides that: Say "go ahead" during an interview and Seny stops asking and writes with its recommended answers. Size epics honestly: an S epic skips research and gets at most one round of questions. And changes outside the roadmap can use `/seny:plan light`.
 
 **What's the difference between an epic, a light change and a fix?**
 An **epic** is a roadmap row: a capability users (or the project) need, with its own branch and PR. A **light change** is a small, clear improvement that doesn't deserve a roadmap row (1–3 stories). A **fix** repairs something that should already work. `/seny:help <what you want>` picks for you.
 
 **Should an epic have sub-epics?**
 No. Seny has three levels: project, epics, stories. If an epic's stories need grouping, split it into two epics on the roadmap.
+
+**I lost the summary of what was done. Can I see it again?**
+Yes: `/seny:help summary`. It rebuilds it from git and the plan, before or after the commit, even after `/clear`, and offers the recent ones to pick from.
 
 **Do I have to use every command?**
 No. Most days you'll use three: `/seny:research`, `/seny:plan` and `/seny:implement`. Bugs go to `/seny:fix`, tiny things don't need Seny at all (the Direct track), and `/seny:help` tells you which track a change deserves.

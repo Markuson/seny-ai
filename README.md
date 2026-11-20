@@ -51,7 +51,7 @@ Seny-driven development is the grandmother in the room. Understand first. Decide
 2. **Plan** decides and slices the work into small stories, each with acceptance criteria, an `Approach` (how to build it) and a `Verify` line (how to prove it works).
 3. **Implement** builds one story: characterization tests first if the code is untested, red-green-refactor where there's logic, then the project's checks against the baseline.
 4. **Review** is done by a separate reviewer agent that never saw the conversation. By default `/seny:implement` calls it on its own and fixes the blockers once.
-5. **You** check it by hand and say "done". Seny commits (if you want) and moves on.
+5. **You** check it by hand and say "done". Seny shows a summary of what changed, what the review found and what you should look at, commits (if you want) and moves on. Lost the summary? `/seny:help summary` brings it back.
 
 **One document at a time.** Research and plan never dump five documents on you at once. Each run interviews you (rounds of questions, each with a recommended answer), writes **one** document, and stops for your review. You ask for changes or approve it; Seny proposes a commit and tells you the next command. Nothing builds on a draft. The documents carry the state, not the chat, so you `/clear` between them, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
 
@@ -72,6 +72,8 @@ Every epic on the roadmap has a **size**, and the size decides how much planning
 | **S** | 1–3 | `/seny:plan <slug>`: one document, one quick round of questions |
 | **M** | 4–8 | `/seny:research <slug>` → `/seny:plan <slug>` |
 | **L** | 9+ | research, then the plan in two passes (shape first, stories after). Or, more seny: split it. |
+
+In a hurry and already sure? **Rauxa mode** (`[R]`, or `all`) writes a whole plan, epic or project in one run, with one interview and one review, and still asks every hard-to-reverse decision.
 
 Starting a whole new app gets the deepest planning of all: product, architecture, design system, roadmap and the foundation plan, each interviewed, written and approved on its own.
 
@@ -130,7 +132,7 @@ Some things always bump you up to at least an **Epic** of size M: data model cha
 | `/seny:review [id] [done]` | Reviews again (after manual changes, or in manual mode), or closes an approved story. |
 | `/seny:fix <bug>` | Failing test first, root cause, minimal fix, review. No duct tape. |
 | `/seny:evolve <change>` | Improves the architecture of living code, step by step, without breaking it. |
-| `/seny:help [what I want]` | Where am I? What next? How much process does this deserve? |
+| `/seny:help [what I want \| summary \| a question]` | Where we are, what was done last, what's next and what it can help with now, as numbered quick answers. Also rebuilds the summary of any story or document, sizes new work, and explains the method. |
 
 Every command, with what it reads, writes, asks and stops on: [guide/commands.md](guide/commands.md).
 

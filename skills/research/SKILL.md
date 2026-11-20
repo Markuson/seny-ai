@@ -1,7 +1,7 @@
 ---
 name: research
 description: Seny phase 1, understand before planning, one document per run. Project level - a new product (product.md) or an existing codebase (codebase and baseline, architecture, design system), or a refresh. Epic level - the research for one epic.
-argument-hint: "project [refresh | <document> | <idea>] | <epic slug, brief file or problem>"
+argument-hint: "project [refresh | <document> | all | <idea>] | <epic slug> [all], brief file or problem"
 disable-model-invocation: true
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh) Bash(git log *) Bash(git status *) Bash(git rev-parse *)
 ---
@@ -30,6 +30,7 @@ You are in the Research phase. Your job is to understand, not to solve.
 - Input starts with `project refresh` → **Project refresh**.
 - Input starts with `project` → **New app** if the repo has no application code yet, **Existing code** if it has. A document name after `project` (`codebase`, `architecture`, `design-system`) picks that document; otherwise take the next pending one.
 - Anything else → **Epic**.
+- `all` in the input → **Rauxa mode** for that scope (`project all`: the pending codebase documents; `<slug> all`: research, plan and design of the epic): follow `${CLAUDE_PLUGIN_ROOT}/references/rauxa.md`.
 If it's not obvious, ask me.
 
 ## New app → `product.md`

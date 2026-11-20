@@ -1,7 +1,7 @@
 ---
 name: plan
 description: Seny phase 2, decide and slice, one document per run. Project mode - architecture, design system, roadmap of sized epics and the foundation plan (new app), or a roadmap (existing code). Epic mode - the plan of one epic (and its design), as deep as its size. Light mode - 1-3 stories. Change mode - update a plan.
-argument-hint: "project [architecture | design-system | roadmap | foundation] | <epic slug> [design | <change>] | light <change>"
+argument-hint: "project [architecture | design-system | roadmap | foundation | all] | <epic slug> [all | design | <change>] | light <change>"
 disable-model-invocation: true
 effort: high
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh)
@@ -22,6 +22,7 @@ You are in the Plan phase. Your job is to decide and slice, not to build. This i
 - **One document per run**, through the document loop. Then stop.
 - Do not write or change code. Only write the document this run owns (plus the after-approval steps listed below).
 - Mode from the input:
+  - `all` anywhere in the input → **Rauxa mode** for that scope (`project all`, `<slug> all`): follow `${CLAUDE_PLUGIN_ROOT}/references/rauxa.md`.
   - `project` (optionally followed by a document name) → **Project mode**.
   - `light <description>` → **Light mode**.
   - `<slug> design` → **Design**.

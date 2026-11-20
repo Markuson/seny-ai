@@ -6,6 +6,8 @@ How Seny thinks, one idea at a time. If you only read one page after the README,
 - [Project, epics and stories](#project-epics-and-stories)
 - [Tracks: how much process](#tracks-how-much-process)
 - [One document at a time](#one-document-at-a-time)
+- [Rauxa mode](#rauxa-mode)
+- [Quick answers and commit summaries](#quick-answers-and-commit-summaries)
 - [The documents](#the-documents)
 - [Anatomy of a story](#anatomy-of-a-story)
 - [Statuses and who moves them](#statuses-and-who-moves-them)
@@ -138,6 +140,68 @@ For a new app the whole planning sequence looks like this, one run (and one revi
 | → | | "Planning is done. Next: `/seny:implement next`" |
 
 `/seny:plan project` always picks the next pending document; you can also name one (`/seny:plan project roadmap`). For existing code, `/seny:research project` does the same with `codebase.md` + `baseline.md`, then `architecture.md`, then `design-system.md`.
+
+---
+
+## Rauxa mode
+
+Step by step is the default, and the right choice when decisions are still open. When you already know what you want, **Rauxa mode** writes several documents in one run: one interview at the start, one review at the end.
+
+| Scope | Writes in one run | Ask for it |
+|---|---|---|
+| Whole plan | The shape and the stories of one plan | `/seny:plan <slug> all`, or `[R]` |
+| Whole epic | Research, plan and design of one epic | `/seny:research <slug> all`, `/seny:plan <slug> all`, or `[R]` |
+| Whole project | Architecture, design system, roadmap and the foundation plan (product approved first) | `/seny:plan project all`, or `[R]` |
+
+Every run starts by saying what it will write and offering `[S]` step by step or `[R]` Rauxa; the hand-over of a document also offers `[R]` to write the rest. Rauxa keeps its helmet on:
+
+- Hard-to-reverse decisions (framework, database, auth, hosting, new dependencies) are always asked in the interview, never assumed.
+- If writing a later document raises a question that changes it, Seny stops and asks instead of inventing.
+- Everything stays `draft` until you approve it. You can approve all at once or one by one; changing a document others build on updates those too.
+- One commit for the whole approved batch.
+- The whole-project scope comes with a warning: a mistake in the architecture carries into everything after it, and you find it at the end.
+
+---
+
+## Quick answers and commit summaries
+
+At decision points Seny offers short lettered or numbered choices, so you answer with one key (or in your own words):
+
+```
+[A] Approve   [C] Changes (or just write them)   [Q] Ask me more questions   [R] Approve and write the rest in Rauxa mode
+```
+
+The interview itself is different: it uses Claude Code's question form, where you tick an answer per question.
+
+Before **every commit** (a story, a fix, a spike, a document or a Rauxa batch), Seny prints a summary in the chat, built from the diff and the plan rather than from memory:
+
+```
+streaks S3 · Show the streak on the habit card — ready to commit
+
+Changed
+- components/ui/HabitCard.tsx — new optional badge slot
+- features/streaks/StreakBadge.tsx — new, hidden under 2 days
+- docs/epics/streaks/plan.md — S3 → done, criteria ticked
+Decisions taken during the work
+- The 🔥 stays in the label text, not as an image (Approach adapted)
+
+Review
+- APPROVED after 1 fix round (missing accessibility label → fixed)
+- Pending should: none · nits: 1 (in chat)
+- Checks vs baseline: no new failures
+
+What you should review
+1. By hand: light and dark, dynamic type at 200% on a small Android
+2. Look at: HabitCard.tsx:40–58 — a base component used by every screen
+3. Accepted on purpose: none
+
+Commit: feature: show streak badge on habit card (streaks S3)
+[C] Commit   [E] Edit the message   [N] I'll commit it myself
+```
+
+"What you should review" only lists what comes from the story's `Verify` line, the diff and the review: never generic advice. Documents get a shorter version (what it decides, what changed in your review, what's worth re-reading).
+
+Lost it in the conversation, or after a `/clear`? `/seny:help summary` rebuilds it from disk, before or after the commit.
 
 ---
 
@@ -452,4 +516,6 @@ Long sessions get expensive and forgetful. Seny's habits:
 | **Review mode** | `auto` (implement calls the reviewer) or `manual` (you run `/seny:review`). |
 | **Epic notes** | Up to three lines per epic in the roadmap: decisions already taken and pointers to detail, so small plans read little. |
 | **Inputs** | `docs/project/inputs/`: reference material kept out of the documents and read only on demand. |
+| **Rauxa mode** | Writing several planning documents in one run, with one interview and one review. Opt-in, `[R]` or `all`. |
+| **Commit summary** | What changed, the review and what you should check, printed before every commit and rebuildable with `/seny:help summary`. |
 | **Docs root** | Where Seny's documents live: `docs/` (shared) or `.seny/` (private). |

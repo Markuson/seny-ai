@@ -68,6 +68,11 @@ has "tweak (light): 0/1 done · 1 todo · plan.md (shape approved)" private; has
 has "Project rules: CLAUDE.local.md .seny/CLAUDE.md" private
 cd "$ROOT"
 
+# ---------- recent.sh
+out=$(cd "$T/empty" && bash "$ROOT/scripts/recent.sh"); [ $? = 0 ] && ok || bad "recent: non-zero exit"
+has "not a git repository" recent-empty
+out=$(cd "$T/ex/apps/mobile" && bash "$ROOT/scripts/recent.sh"); has "teammate" recent-repo
+
 # ---------- lint
 python3 "$ROOT/tests/lint.py" "$ROOT" && ok || bad "lint"
 

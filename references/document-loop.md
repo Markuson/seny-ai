@@ -4,6 +4,8 @@ Shared by `/seny:research`, `/seny:plan` and `/seny:evolve`. **One document per 
 
 Seny's planning is proportional: how hard you interview me depends on what the document decides.
 
+**Quick answers.** At decision points (start of a run, hand-over, commit) offer short lettered choices, e.g. `[A] Approve`, and accept the letter, the word, or my own words. The interview itself uses the question form described in step 3, not letters.
+
 ## Depth by weight
 
 | Document | Question rounds | Passes |
@@ -20,6 +22,12 @@ Seny's planning is proportional: how hard you interview me depends on what the d
 
 ## Steps
 
+0. **Announce.** One short block before anything else: the document you'll write, what you'll read, and the depth (rounds of questions). If later documents could be written in the same run (see `${CLAUDE_PLUGIN_ROOT}/references/rauxa.md`), offer:
+   ```
+   [S] Step by step: only <document>, you review it, then the next (default)
+   [R] Rauxa: <document> and <the next ones in scope>, one review at the end
+   ```
+   Wait for my pick, unless the input already chose (`all` → Rauxa). `S` or "go" → step by step. `R` → follow `rauxa.md` instead of the steps below. When nothing else is in scope, skip the menu and just announce.
 1. **Inputs.** Read the documents this one builds on (the caller lists them), and only the parts you need: an epic reads its roadmap row and its **epic notes** first, then the sections of `product.md`, `architecture.md` or `<docs>/project/inputs/` they point to. If an input is still `Status: draft`, stop: tell me to review and approve it first, unless I say to go on anyway. If this document already exists as a draft with an `## Answers so far` section, an interview was interrupted: resume from it instead of asking again.
 2. **Branch.** Project documents are written on the current branch (normally the default one). Epic documents belong on the epic's branch: if I'm on the default branch, propose the branch (`Branch:` of the plan, else `feature/<slug>` or the repo's convention), and create it after my yes, before writing.
 3. **Interview.** Ask in rounds of at most 5 questions, grouped by topic.
@@ -29,9 +37,13 @@ Seny's planning is proportional: how hard you interview me depends on what the d
    - Stop when the remaining unknowns wouldn't change this document, or when I say to go ahead. If something is still unknown after the rounds the table allows, it becomes an open question in the document.
 4. **Draft.** Write the document from its template with `Status: draft`, replacing `## Answers so far`. Only this document; nothing else in `<docs>` changes.
 5. **Self-check** before showing it to me, with the checklist below (fix what fails) and the size guide (which only produces a note for the hand-over).
-6. **Hand over.** The path, a 3–5 line summary, the 2–3 points you're least sure about, the open questions, and the size note if there is one. Then: "Review it and tell me what to change, or say it's approved."
+6. **Hand over.** The path, a 3–5 line summary, the 2–3 points you're least sure about, the open questions, and the size note if there is one. Then the menu:
+   ```
+   [A] Approve   [C] Changes (or just write them)   [Q] Ask me more questions
+   [R] Approve and write the rest of the <plan | epic | project> in Rauxa mode     (only when there is a rest)
+   ```
 7. **Changes.** Apply what I ask, and what follows from it in the same document. The status stays `draft`. Tell me what changed, then step 6 again.
-8. **Approved.** Set `Status: approved (YYYY-MM-DD)` (in a shape pass: `shape approved (YYYY-MM-DD)`). Run the after-approval step the caller lists, if any. Propose a commit message, `docs: <add | update> <document> for <project or epic>`, and apply my commit rule: commit if I told you to, don't if I told you not to, otherwise ask. Never push.
+8. **Approved.** Set `Status: approved (YYYY-MM-DD)` (in a shape pass: `shape approved (YYYY-MM-DD)`). Run the after-approval step the caller lists, if any. Then the commit summary, document form (`${CLAUDE_PLUGIN_ROOT}/references/commit-summary.md`), with its `[C] [E] [N]` menu. Never push. On `[R]` at hand-over: approve, commit, and continue with the rest in Rauxa mode in this same run.
 9. **Next.** Tell me the next command and suggest `/clear` before it. If this was the last document before implementation, say so plainly: "Planning is done. Next: `/clear`, then `/seny:implement next`."
 
 An approved document that changes later (Change mode, a refresh) goes back to `draft` and through steps 6–8 again.

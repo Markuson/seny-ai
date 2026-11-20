@@ -30,7 +30,11 @@ Still CHANGES REQUESTED when no rounds are left → stop.
 
 ## 4. Hand over to me
 - **CHANGES REQUESTED** → set the story to `in-progress`. Show me the blockers and the `should` findings. Next: `/seny:implement <story id>` (a fix round).
-- **APPROVED** → the story stays in `review`. Show me the verdict, the `should` findings, and the manual part of the story's `Verify:` line (what I should check by hand). Ask whether to mark it `done`. When I say yes, follow `${CLAUDE_PLUGIN_ROOT}/references/close-story.md`.
+- **APPROVED** → the story stays in `review`. Show me the verdict, the `should` findings, and the manual part of the story's `Verify:` line (what I should check by hand). Then:
+  ```
+  [D] Done: close the story   [F] Fix a should first   [W] Wait, I'll check it by hand first
+  ```
+  `D` → follow `${CLAUDE_PLUGIN_ROOT}/references/close-story.md`. `F` → set `in-progress`; next is `/seny:implement <story id>`. `W` → stop; later `/seny:review <story id> done` closes it.
 - In both cases:
   - If the reviewer proposed E2E tests, show the proposal and ask whether to run or write them. Do nothing with E2E until I decide.
   - If it flagged an undocumented architecture or design-system change, ask whether to record it in the project docs or treat it as a finding.
