@@ -51,7 +51,7 @@ Seny-driven development is the grandmother in the room. Understand first. Decide
 2. **Plan** decides and slices the work into small stories, each with acceptance criteria, an `Approach` (how to build it) and a `Verify` line (how to prove it works).
 3. **Implement** builds one story: characterization tests first if the code is untested, red-green-refactor where there's logic, then the project's checks against the baseline.
 4. **Review** is done by a separate reviewer agent that never saw the conversation. By default `/seny:implement` calls it on its own and fixes the blockers once.
-5. **You** check it by hand and say "done". Seny shows a summary of what changed, what the review found and what you should look at, commits (if you want) and moves on. Lost the summary? `/seny:help summary` brings it back.
+5. **You** check it by hand and say "done". Seny shows a summary of what changed, what the review found and what you should look at, commits with a message in one fixed format (`feature: show streak badge on habit card (streaks S3)`) if you say so, and moves on. Lost the summary? `/seny:help summary` brings it back.
 
 **One document at a time.** Research and plan never dump five documents on you at once. Each run interviews you (rounds of questions, each with a recommended answer), writes **one** document, and stops for your review. You ask for changes or approve it; Seny proposes a commit and tells you the next command. Nothing builds on a draft. The documents carry the state, not the chat, so you `/clear` between them, go have a coffee (or a *cafè amb llet*), and come back days later without losing the plot.
 
@@ -74,6 +74,8 @@ Every epic on the roadmap has a **size**, and the size decides how much planning
 | **L** | 9+ | research, then the plan in two passes (shape first, stories after). Or, more seny: split it. |
 
 In a hurry and already sure? **Rauxa mode** (`[R]`, or `all`) writes a whole plan, epic or project in one run, with one interview and one review, and still asks every hard-to-reverse decision.
+
+Several epics ready at once? **Colla mode** (`/seny:plan colla`, or `[P]` when Seny offers it) opens each one on its own branch, worktree and Claude Code session, so they move in parallel without stepping on each other.
 
 Starting a whole new app gets the deepest planning of all: product, architecture, design system, roadmap and the foundation plan, each interviewed, written and approved on its own.
 
@@ -128,6 +130,7 @@ Some things always bump you up to at least an **Epic** of size M: data model cha
 | `/seny:plan <slug> [design]` | The epic's plan, as deep as its size: small stories, each with an `Approach` and a `Verify` line. Plus a design doc when there's UI. |
 | `/seny:plan <slug> <change>` | Changes a plan without rewriting history: stories already started stay as they are. |
 | `/seny:plan light <change>` | A tiny plan for a tiny change. |
+| `/seny:plan colla [<epics>]` | Colla mode: starts several ready epics in parallel, each on its own branch, worktree and session. |
 | `/seny:implement <id> \| next [no-review]` | One story: builds it, checks it against the baseline, gets it reviewed (one round of fixes if needed), and stops for your "done". |
 | `/seny:review [id] [done]` | Reviews again (after manual changes, or in manual mode), or closes an approved story. |
 | `/seny:fix <bug>` | Failing test first, root cause, minimal fix, review. No duct tape. |
@@ -203,11 +206,12 @@ docs/                      # or .seny/ in private mode
     baseline.md            # which checks already failed, and at which commit
     architecture.md        # stack, structure, data, decisions, transitions
     design-system.md       # tokens, typography, base components
-    roadmap.md             # epics and evolutions, in order, each with a size and a few notes
+    roadmap.md             # epics and evolutions, in order, each with a size and a few notes (status comes from each plan)
     inputs/                # reference material: read only when a document points to it
   epics/<slug>/            # one epic (or evolution): builds on project/, never repeats it
     research.md            # sizes M and L; plus spike findings, if any
     plan.md                # a flat list of stories with statuses
+    baseline.md            # only when the epic records its own (parallel epics)
     design.md              # only when there's UI
 ```
 

@@ -31,6 +31,7 @@ Poc a poc: a habit tracker for families. Parents and kids track small daily habi
 ## Seny
 - Seny docs: `docs`
 - Seny review: auto
+- Seny parallel: suggest · max 2
 - `<docs>/project/` is app-wide: `product.md`, `codebase.md`, `baseline.md`, `architecture.md`, `design-system.md`, `roadmap.md`. Read `architecture.md` before changing structure, state or boundaries, and `design-system.md` before UI work.
 - `<docs>/epics/<slug>/` is one epic (a roadmap row: one branch, one PR): `plan.md`, plus `research.md` and `design.md` when its size or UI needs them. The plan is the source of truth; if reality contradicts it, stop and propose a change.
 - Documents are `draft` until I approve them; nothing builds on a draft. One document per run, `/clear` between them.

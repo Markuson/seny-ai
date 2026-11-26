@@ -26,7 +26,7 @@ Bug: $ARGUMENTS
 ## Steps
 1. **Understand.** Restate the bug in 2 lines: actual vs expected behaviour. If you are missing what you need to reproduce it (steps, input, error, platform), ask in one batch.
 2. **Clean start.** On the default branch → propose `fix/<short-description>` (or the repo's convention) and wait for my answer. Uncommitted changes that aren't part of this fix → ask me to commit or stash them first.
-3. **Baseline.** If the state says it is missing or stale and the project rules define checks, record it first, exactly as `/seny:implement` does (step 3 there; `By: fix`).
+3. **Baseline.** If the state says it is missing or stale and the project rules define checks, record it first, exactly as `/seny:implement` does (step 3 there, same file choice; `By: fix`).
 4. **Reproduce.** Find the code involved. If it has no tests, first write characterization tests that pin its current correct behaviour. Then write a test that fails because of the bug. Run it and show me it fails for the right reason.
    If it can't be a unit or integration test (purely visual, device-specific, timing), say why, give me the manual steps, and propose an E2E test (Playwright or Maestro, or the project's tool) for me to decide.
 5. **Root cause.** Explain it in 2–3 lines with `file:line`: what is wrong and why it produces the symptom.
@@ -34,4 +34,4 @@ Bug: $ARGUMENTS
 7. **Check.** Run the project's checks and compare with `<docs>/project/baseline.md`, if any: only new failures block. Fix what fails; if it still fails after two attempts, stop and show me the error.
 8. **Look around.** Search for the same mistake elsewhere (same pattern, same misuse). List what you find; don't fix it here. Offer to add it to the tech debt table of `<docs>/project/codebase.md`, and write it only after my yes.
 9. **Review.** Follow steps 1–3 of `${CLAUDE_PLUGIN_ROOT}/references/review-loop.md` in fix mode (the bug is the acceptance criterion; results in chat, no plan) with **2 fix rounds**. Still CHANGES REQUESTED after them → stop and show me.
-10. **Report**: the root cause in 2 lines and the same pattern elsewhere if found, then the commit summary, fix form (`${CLAUDE_PLUGIN_ROOT}/references/commit-summary.md`; message: the repo's convention, else `fix: <description>`), with its `[C] [E] [N]` menu.
+10. **Report**: the root cause in 2 lines and the same pattern elsewhere if found, then the commit summary, fix form (`${CLAUDE_PLUGIN_ROOT}/references/commit-summary.md`; message per `${CLAUDE_PLUGIN_ROOT}/references/commits.md`), with its `[C] [E] [N]` menu.

@@ -37,14 +37,14 @@ Target: $ARGUMENTS
 2. **Clean start.**
    - On the default branch → propose the plan's `Branch:` and wait for my answer before changing anything.
    - Uncommitted changes that don't belong to this story (another story, unrelated edits) → ask me to commit or stash them first, so the review sees only this story.
-3. **Baseline.** If the state says the baseline is missing or stale and the project rules define checks: with a clean working tree (else ask), run the checks before changing anything and write `<docs>/project/baseline.md` (format: `${CLAUDE_PLUGIN_ROOT}/templates/project/baseline.md`; `Commit:` is `git rev-parse --short HEAD`; `By: implement <story id>`). Tell me what changed against the previous one. No checks defined yet (early foundation stories) → skip.
+3. **Baseline.** If the state says the baseline is missing or stale and the project rules define checks: with a clean working tree (else ask), run the checks before changing anything and write the baseline (on an epic's branch — the state shows `Current epic` — `<docs>/epics/<slug>/baseline.md`; otherwise `<docs>/project/baseline.md`; format: `${CLAUDE_PLUGIN_ROOT}/templates/project/baseline.md`; `Commit:` is `git rev-parse --short HEAD`; `By: implement <story id>`). Tell me what changed against the previous one. No checks defined yet (early foundation stories) → skip.
 4. Set the story's status to `in-progress` in the plan.
 5. **Read what the story builds on.** Restate the acceptance criteria (plus open findings or notes) in a few lines. Then:
    - The story's `Approach:`, `Files:` and `Verify:` lines: they are your starting map. Read the code they point to, not the whole repo.
    - `<docs>/project/architecture.md`, if it exists: follow its structure, state, boundaries and conventions. If the story needs something that contradicts it, stop and tell me. If it touches an area listed under **In transition**, follow its rule for new code: use the target pattern, never add more of the old one.
    - `Type: evolution`: behaviour must not change unless the story says so. The characterization tests must pass unchanged; if one needs editing, stop and ask me why.
    - UI stories: `<docs>/project/design-system.md` and the section the `Design:` line points to: tokens (no hard-coded colours or sizes), base components, every listed state. If a design skill is installed (`frontend-design`, `vercel-react-native-skills`), load it.
-   - `<docs>/project/baseline.md`, if any: the checks that already failed.
+   - The baseline the state points to (the epic's or the project's): the checks that already failed.
 6. **Characterization first.** If the story changes existing code that has no tests, first write tests that pin its current behaviour and run them green. Then change it.
 7. **Implement**, following the story's `Tests` mode:
    - `tdd`:

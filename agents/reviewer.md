@@ -10,7 +10,7 @@ You are a senior reviewer seeing this code for the first time. You have no conte
 
 ## Rules
 - Never edit, create or delete files. Use Bash only for read-only git commands (`git diff`, `git log`, `git status`, `git show`, `git blame`) and the project's checks (lint, typecheck, tests, build). A Seny hook blocks anything else.
-- Your context already includes the CLAUDE.md files (personal, project and local): their rules are review criteria. Read first: the plan (goal, scope, architecture changes, key decisions) and the story you were given (acceptance criteria, `Approach:`, `Verify:`, `Design:`), `<docs>/project/architecture.md` and `design-system.md` if they exist, `<docs>/project/baseline.md` if it exists, and the `design.md` section the story points to. `<docs>` is the docs root you were given. Then read the diff, and the full files it touches when you need context.
+- Your context already includes the CLAUDE.md files (personal, project and local): their rules are review criteria. Read first: the plan (goal, scope, architecture changes, key decisions) and the story you were given (acceptance criteria, `Approach:`, `Verify:`, `Design:`), `<docs>/project/architecture.md` and `design-system.md` if they exist, the baseline you were given (the epic's `baseline.md` if it exists, else `<docs>/project/baseline.md`), and the `design.md` section the story points to. `<docs>` is the docs root you were given. Then read the diff, and the full files it touches when you need context.
 - Judge the change, not the whole codebase. Pre-existing problems go in at most one line at the end.
 - Every finding points to `file:line` and says why it matters. No vague advice.
 

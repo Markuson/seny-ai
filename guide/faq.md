@@ -67,7 +67,7 @@ Use Change mode: `/seny:plan <slug> drop S3, it's not needed anymore` or `… mo
 That's exactly when `/seny:implement` stops instead of improvising. Run `/seny:plan <slug> <what changed>`, then `/seny:implement <id>` again. If the change is big (new data model, new screens), update the research first.
 
 **Can I work on two epics at the same time?**
-Yes, on separate branches. Commit (or stash) before switching, so each review sees one story. With several epics in progress, `/seny:help` lists them and asks which one to continue.
+Yes: that's Colla mode. When epics are ready at once, Seny offers it (or run `/seny:plan colla`): each epic gets its own branch, worktree and Claude Code session. Without it, use separate branches and commit (or stash) before switching, so each review sees one story. With several epics in progress, `/seny:help` lists them and asks which one to continue.
 
 **I ran out of context in the middle of a story.**
 `/seny:implement` writes a `Notes:` line under the story (done so far, decisions, next step) and asks you to `/clear`. Run the same command again: it resumes from the notes. If a session ended abruptly before the notes were written, the story is still `in-progress`; implement will read the diff and carry on.
@@ -79,7 +79,10 @@ If it's still `todo`: `/seny:plan <slug> <change>`, or edit `plan.md` by hand, i
 Yes, they're yours. Keep the shapes the tools read: story headings like `#### S2 · Title — \`status\``, the `Status:` line at the top of each document, roadmap rows starting with `| <number> |`, and the `Recorded: … · Commit: \`sha\`` line of the baseline (never edit the baseline by hand, though; re-record it).
 
 **Where's the commit? Seny didn't commit.**
-Seny commits only when a story becomes `done` and your commit rule allows it. If you never said "commit", it asks. See [configuration](configuration.md#commits).
+Seny commits only after your `[C]` in the commit summary (or automatically, if you told it to for the session). Answering `[N]` leaves it to you; `/seny:help summary` shows the summary again.
+
+**Why do commit messages look the same every time?**
+On purpose: one fixed format, `<type>: <description> (<epic> <S#>)`, with the type chosen by rule. See [commits](configuration.md#commits). If your repo has its own convention, `/seny:init` records it and that one wins. See [configuration](configuration.md#commits).
 
 ---
 
@@ -118,6 +121,9 @@ Restart Claude Code after installing or updating the plugin: hooks load at start
 
 **The snapshot shows the wrong docs root.**
 The `Seny docs:` line must look exactly like `- Seny docs: \`docs\`` in `CLAUDE.md`, `CLAUDE.local.md` or `.seny/CLAUDE.md`. Without it, Seny uses `.seny/` if it exists, else `docs/`.
+
+**My roadmap has no Status column any more.**
+Since 0.8 the state derives each epic's status from its plan, so epics worked in parallel never conflict over the roadmap. Old roadmaps with a Status column still work; the column is simply ignored.
 
 **The baseline is always "stale".**
 Seny considers a baseline stale when commits by *other people* arrived after it. If you commit with different emails (work and personal, or one per machine), your own commits look like someone else's. Use the same `git config user.email` on every machine, or simply let implement re-record it: it costs one run of the checks.

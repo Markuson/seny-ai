@@ -43,7 +43,7 @@ Seny's planning is proportional: how hard you interview me depends on what the d
    [R] Approve and write the rest of the <plan | epic | project> in Rauxa mode     (only when there is a rest)
    ```
 7. **Changes.** Apply what I ask, and what follows from it in the same document. The status stays `draft`. Tell me what changed, then step 6 again.
-8. **Approved.** Set `Status: approved (YYYY-MM-DD)` (in a shape pass: `shape approved (YYYY-MM-DD)`). Run the after-approval step the caller lists, if any. Then the commit summary, document form (`${CLAUDE_PLUGIN_ROOT}/references/commit-summary.md`), with its `[C] [E] [N]` menu. Never push. On `[R]` at hand-over: approve, commit, and continue with the rest in Rauxa mode in this same run.
+8. **Approved.** Set `Status: approved (YYYY-MM-DD)` (in a shape pass: `shape approved (YYYY-MM-DD)`). Run the after-approval step the caller lists, if any. Then the commit summary, document form (`${CLAUDE_PLUGIN_ROOT}/references/commit-summary.md`; message per `${CLAUDE_PLUGIN_ROOT}/references/commits.md`), with its `[C] [E] [N]` menu. Never push. On `[R]` at hand-over: approve, commit, and continue with the rest in Rauxa mode in this same run.
 9. **Next.** Tell me the next command and suggest `/clear` before it. If this was the last document before implementation, say so plainly: "Planning is done. Next: `/clear`, then `/seny:implement next`."
 
 An approved document that changes later (Change mode, a refresh) goes back to `draft` and through steps 6–8 again.

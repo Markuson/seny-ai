@@ -68,6 +68,24 @@ has "tweak (light): 0/1 done · 1 todo · plan.md (shape approved)" private; has
 has "Project rules: CLAUDE.local.md .seny/CLAUDE.md" private
 cd "$ROOT"
 
+# roadmap status derived from plans, parallel suggestions, epic baseline
+mkdir -p "$T/par/docs/project" "$T/par/docs/epics/foundation" "$T/par/docs/epics/i18n"; cd "$T/par"
+git init -q -b main; printf -- '- Seny docs: `docs`\n- Seny parallel: suggest · max 3\n' > CLAUDE.md
+printf '# R\n\n| # | Epic | Type | Size | Goal | Depends on |\n|---|---|---|---|---|---|\n| 1 | foundation | epic | L | b | — |\n| 2 | i18n | epic | M | l | foundation |\n| 3 | about | epic | M | a | i18n |\n| 4 | projects | epic | S | p | i18n |\n| 5 | contact | epic | S | c | i18n, foundation |\n| 6 | launch | epic | M | x | all above |\n' > docs/project/roadmap.md
+printf '# F\n\nBranch: `feature/foundation`\n\n#### S1 · A — `done`\n' > docs/epics/foundation/plan.md
+printf '# I\n\nBranch: `feature/i18n`\n\n#### S1 · A — `done`\n#### S2 · B — `review`\n' > docs/epics/i18n/plan.md
+g add -A; g commit -qm x; out=$(bash "$STATE")
+has "Roadmap: 1 done" parallel-busy; has "2 i18n (epic, M) <- foundation · \`in-progress\`" parallel-busy; hasnt "Parallel:" parallel-busy
+sed -i.bak 's/`review`/`done`/' docs/epics/i18n/plan.md; rm -f docs/epics/i18n/plan.md.bak; g commit -qam done; out=$(bash "$STATE")
+has "Roadmap: 2 done" parallel; has "Parallel: 3 epics ready to start at once (about projects contact) · max 3 at a time" parallel
+out=$(printf '%s\n' "$out" | grep Parallel); hasnt "launch" parallel-all-above
+printf -- '- Seny docs: `docs`\n- Seny parallel: off\n' > CLAUDE.md; out=$(bash "$STATE"); hasnt "Parallel:" parallel-off
+mkdir -p docs/epics/about; printf '# A\n\nBranch: `feature/about`\n\n#### S1 · A — `todo`\n' > docs/epics/about/plan.md
+g add -A; g commit -qm about; g checkout -qb feature/about
+printf '# Baseline\n\nRecorded: 2026-11-26 · Commit: `%s` · By: x\n' "$(git rev-parse --short HEAD)" > docs/epics/about/baseline.md
+out=$(bash "$STATE"); has "[epic about]" epic-baseline; has "Current epic (from its Branch: line): about" epic-baseline
+cd "$ROOT"
+
 # ---------- recent.sh
 out=$(cd "$T/empty" && bash "$ROOT/scripts/recent.sh"); [ $? = 0 ] && ok || bad "recent: non-zero exit"
 has "not a git repository" recent-empty

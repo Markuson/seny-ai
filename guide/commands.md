@@ -11,6 +11,7 @@ All commands start by reading the [state snapshot](concepts.md#the-state-snapsho
 | [`/seny:research <epic>`](#seny-research-feature) | Understand one epic (sizes M and L) |
 | [`/seny:spike`](#seny-spike) | Answer one technical question with throwaway code |
 | [`/seny:plan project`](#seny-plan-project) | Architecture, design system, roadmap, foundation, one document per run |
+| [`/seny:plan colla`](#seny-plan-colla) | Start several ready epics in parallel |
 | [`/seny:plan <slug> …`](#seny-plan-feature) | Plan an epic (as deep as its size), design it, change it, or plan a light change |
 | [`/seny:implement`](#seny-implement) | Build one story and get it reviewed |
 | [`/seny:review`](#seny-review) | Review again, or close an approved story |
@@ -138,6 +139,25 @@ When the foundation plan is approved: "Planning is done." Next: `/clear`, then `
 
 ---
 
+<a name="seny-plan-colla"></a>
+
+## `/seny:plan colla`
+
+**Usage:** `/seny:plan colla [<epic slug> …]`
+
+**Use it when** two or more roadmap epics are ready at once (the state shows a `Parallel:` line). Seny also offers it when an epic closes and in `/seny:help`.
+
+**Steps:**
+1. Shows the ready epics with their size as numbered choices, up to the `max` of `Seny parallel:` (default 2), and warns if two are likely to touch the same areas.
+2. After your yes, creates a branch and a git worktree for each one beside the repo.
+3. Gives you, per epic, the command to open a Claude Code session in its worktree (`cd ../<repo>-<slug> && claude`), the install to run once, and the first Seny command.
+
+**Writes:** no documents. Only branches and worktrees.
+
+**While epics run in parallel:** none of them edits the roadmap's statuses (they are derived from each plan), and each branch records its own baseline in `docs/epics/<slug>/baseline.md`. Each epic ends in its own pull request; after merging, remove its worktree (`git worktree remove ../<repo>-<slug>`, Seny can do it after your yes).
+
+---
+
 <a name="seny-plan-feature"></a>
 
 ## `/seny:plan <slug> …`
@@ -156,7 +176,7 @@ When the foundation plan is approved: "Planning is done." Next: `/clear`, then `
 | M | `research.md` approved | 1 | 1–2 rounds |
 | L | `research.md` approved | 2: shape (`shape approved`), then stories (`approved`), each its own run | 1–2 per pass |
 
-The plan has a goal, scope (in and out, with reasons), architecture changes on top of `architecture.md` (never restating it), key decisions with rejected alternatives, and a **flat list of stories** `S1…Sn`: acceptance criteria, `Tests`, `Verify`, `Depends on`, and an `Approach` anchored to the code unless trivial. If the story count doesn't fit the size, it proposes resizing or splitting. It asks before any app-wide change, and suggests a spike instead of planning around a guess. After approval the roadmap row becomes `in-progress`; next is the design (if there's UI) or `/seny:implement next`.
+The plan has a goal, scope (in and out, with reasons), architecture changes on top of `architecture.md` (never restating it), key decisions with rejected alternatives, and a **flat list of stories** `S1…Sn`: acceptance criteria, `Tests`, `Verify`, `Depends on`, and an `Approach` anchored to the code unless trivial. If the story count doesn't fit the size, it proposes resizing or splitting. It asks before any app-wide change, and suggests a spike instead of planning around a guess. After approval the epic shows as `in-progress` (derived from the plan; the roadmap isn't edited); next is the design (if there's UI) or `/seny:implement next`.
 
 **Design** (requires the plan approved): loads your design skills, starts from the design system and existing components, offers two directions if there's no system yet, writes `design.md` (only the sections the epic needs), proposes reusable tokens or components for `design-system.md`, and links UI stories to their design sections.
 
@@ -220,9 +240,9 @@ When you say yes, it [closes the story](#closing-a-story).
 When you confirm "done" (here or at the end of `/seny:implement`):
 1. If you want a `should` fixed first, the story goes back to `in-progress`.
 2. The story becomes `done`; finished epics are announced.
-3. If the whole epic is done: approved app-wide changes are checked in the project docs, the roadmap row becomes `done`, evolutions get their **In transition** row retired (after checking the old pattern is gone), and you get a **PR title and body** ready to paste.
-4. A commit message is proposed (repo convention, else `<type>: <description>`, with the story id) and your commit rule applies: commit if you said so, don't if you said not, ask otherwise.
-5. Next: `/seny:implement next`, or the next roadmap row after a `/clear`: `/seny:plan <slug>` for size S, `/seny:research <slug>` for M and L, `/seny:evolve <slug>` for an evolution.
+3. If the whole epic is done: approved app-wide changes are checked in the project docs (the roadmap shows the epic as `done` on its own), evolutions get their **In transition** row retired (after checking the old pattern is gone), and you get a **PR title and body** ready to paste.
+4. The commit summary, with a message in the [fixed format](configuration.md#commits), and `[C] [E] [N]`.
+5. Next: `/seny:implement next`, or the next roadmap row after a `/clear`: `/seny:plan <slug>` for size S, `/seny:research <slug>` for M and L, `/seny:evolve <slug>` for an evolution. With two or more epics ready, it also offers `[P]` Colla mode.
 
 ---
 
@@ -244,7 +264,7 @@ When you confirm "done" (here or at the end of `/seny:implement`):
 7. Runs the checks against the baseline.
 8. **Looks around** for the same mistake elsewhere; offers to record what it finds as debt in `codebase.md`.
 9. **Review** by `seny:reviewer` (up to two fix rounds).
-10. Reports cause, fix, test, checks, verdict, manual checks and a commit message (`fix: …`), then applies your commit rule.
+10. Reports the root cause and the same pattern elsewhere, then the commit summary (`fix: …`) with `[C] [E] [N]`.
 
 **Stops and escalates** if the cause is bigger than a fix (a design flaw, a migration, auth, many modules): it recommends `/seny:plan light` or a new epic.
 

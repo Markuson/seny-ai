@@ -2,6 +2,21 @@
 
 All notable changes to Seny. Versions follow [semver](https://semver.org/): while Seny is `0.x`, minor versions may change commands or document formats.
 
+## [0.8.0] — 2026-11-26
+
+Commits that look the same every time, and epics that move in parallel.
+
+### Added
+- **Fixed commit format** (`references/commits.md`): the repo's convention if `/seny:init` recorded one, else `<type>: <description> (<epic> <S#>)`, with the type chosen by rule (feature, refactor, chore, test, fix, docs). Every command that commits uses it; `/seny:init` writes the chosen convention into the project rules.
+- **Colla mode** for epics (`references/colla.md`, `/seny:plan colla`): when two or more roadmap epics are ready at once, Seny creates a branch and a git worktree for each and hands you the commands to open a Claude Code session in each one. Offered when an epic closes and in `/seny:help`.
+- `Seny parallel: suggest | off · max N` in the project rules (default `suggest · max 2`).
+- The state shows `Parallel:` when epics are ready at once, the other worktrees, and the current epic.
+
+### Changed
+- **The roadmap has no status column**: the state derives each epic's status from its plan (`todo` / `in-progress` / `done`). Old roadmaps with the column still work; it is ignored.
+- **Epic baselines**: on an epic's branch, implement and fix record the baseline in `<docs>/epics/<slug>/baseline.md`, so parallel epics never conflict over it.
+- The personal rules template points to Seny's commit format for Seny projects.
+
 ## [0.7.0] — 2026-11-20
 
 Faster when you want it, clearer when you come back.

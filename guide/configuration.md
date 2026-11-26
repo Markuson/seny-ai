@@ -9,6 +9,7 @@ Everything you can set up, where it lives, and why. Seny works with zero configu
 - [Project rules: the project's `CLAUDE.md`](#project-rules)
 - [Review mode](#review-mode)
 - [Commits](#commits)
+- [Parallel work (Colla mode)](#parallel-work-colla-mode)
 - [Permissions](#permissions)
 - [The safety hook](#the-safety-hook)
 - [Private mode](#private-mode)
@@ -128,12 +129,49 @@ Either way, **only you** move a story to `done`.
 
 ## Commits
 
-Seny never decides on its own to commit. It follows the commit rule in your personal or project rules. The template's rule:
+**When.** Seny never commits on its own initiative. Before every commit it shows a [summary](concepts.md#quick-answers-and-commit-summaries) and waits for your `[C]`, unless you told it to commit for the whole session. Commits happen when a story becomes `done` (one story, one commit, code and doc updates together), at the end of a fix, when a document is approved, and on spike branches if you keep the spike code. Never a push.
 
-- If you told it to commit, it commits; if you told it not to, it doesn't. That holds for the session.
-- If you said nothing, it asks at the end: *"¿Hago el commit o lo haces tú?"* (or whatever you write in your rules).
+**Format.** One fixed rule, so messages don't drift:
 
-Commits happen when a story becomes `done` (one story, one commit, code and doc updates together), at the end of a fix, and on spike branches if you keep the spike code. Messages follow the repo's convention first, then your personal one, then `<type>: <description>`.
+1. The repo's own convention, if `/seny:init` found one in the history and you confirmed it (it's written under *Repo conventions → Commits* in the project rules).
+2. Otherwise, Seny's format:
+
+```
+<type>: <description> (<epic> <S#>)
+```
+
+| What is committed | Type |
+|---|---|
+| A story with new behaviour | `feature` |
+| A story of an evolution | `refactor` |
+| A story with only configuration or tooling | `chore` |
+| A story with only tests (characterization) | `test` |
+| A fix | `fix` |
+| Seny documents (one, or a Rauxa batch) | `docs` |
+| Spike code (on its branch, never merged) | `chore` |
+
+The description is English, imperative, lowercase, without a final period, at most 60 characters, and says what you gain, not how. Examples:
+
+- `feature: show streak badge on habit card (streaks S3)`
+- `fix: count streaks in the family time zone`
+- `docs: approve architecture for marcuson.dev`
+- `docs: plan foundation (shape, stories)`
+
+Your personal rules decide *when* Seny commits; the format comes from here. `[E]` in the commit summary changes one message when you need to.
+
+---
+
+## Parallel work (Colla mode)
+
+```markdown
+- Seny parallel: suggest · max 2
+```
+
+- `suggest` (default): when two or more roadmap epics are ready at once, Seny says so in the state and offers Colla mode when an epic closes and in `/seny:help`.
+- `off`: never suggests it (you can still run `/seny:plan colla`).
+- `max N`: how many epics it proposes to run at once. Each one is a Claude Code session and a set of checks running on your machine, and they all count against your usage limits: 2 is a good start.
+
+How it works: [concepts](concepts.md#working-in-parallel-colla-mode).
 
 ---
 

@@ -14,8 +14,7 @@ Stack choices for new projects live in `~/.claude/seny/stack.md` (see `templates
   - If I haven't said anything, don't commit during the task. At the end, ask: "¿Hago el commit o lo haces tú?".
 - Before starting a feature, propose a branch name. With every change, propose a commit message.
 - Branch: `<type>/<short-kebab-description>` — e.g. `feature/user-login`, `fix/empty-cart-crash`.
-- Commit: `<type>: <description>` in imperative mood — e.g. `feature: add user login form`.
-- Types: `feature`, `fix`, `refactor`, `test`, `docs`, `chore`.
+- Commit messages: `<type>: <description>` in imperative mood — e.g. `feature: add user login form`. Types: `feature`, `fix`, `refactor`, `test`, `docs`, `chore`. In projects using Seny, its commit format (`references/commits.md`) applies.
 - Before proposing a commit: `pnpm lint`, typecheck and `pnpm test` are green.
 
 ## Package manager

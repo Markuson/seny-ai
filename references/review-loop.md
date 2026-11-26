@@ -8,7 +8,7 @@ The caller tells you how many **fix rounds** you may run: `/seny:implement` auto
 Launch the `seny:reviewer` subagent. It has not seen this conversation, so its prompt must stand on its own:
 - The docs root, the plan path and the story id. For a fix (no plan): the bug as the acceptance criterion — "<expected behaviour>; the reproduction test fails without the fix and passes with it" — and "scope means nothing changed beyond what the fix needs".
 - What to diff, as an exact command: by default `git diff HEAD` plus the untracked files from `git status --porcelain`; or the git range I gave.
-- Which project docs exist: `architecture.md`, `design-system.md`, `baseline.md`.
+- Which project docs exist (`architecture.md`, `design-system.md`) and which baseline applies (the epic's, if the state shows one, else the project's).
 - That it must follow its checklist and its output format exactly.
 
 ## 2. Record the result

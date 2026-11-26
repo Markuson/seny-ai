@@ -1,7 +1,7 @@
 ---
 name: plan
 description: Seny phase 2, decide and slice, one document per run. Project mode - architecture, design system, roadmap of sized epics and the foundation plan (new app), or a roadmap (existing code). Epic mode - the plan of one epic (and its design), as deep as its size. Light mode - 1-3 stories. Change mode - update a plan.
-argument-hint: "project [architecture | design-system | roadmap | foundation | all] | <epic slug> [all | design | <change>] | light <change>"
+argument-hint: "project [architecture | design-system | roadmap | foundation | all] | <epic slug> [all | design | <change>] | light <change> | colla [<slugs>]"
 disable-model-invocation: true
 effort: high
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh)
@@ -23,6 +23,7 @@ You are in the Plan phase. Your job is to decide and slice, not to build. This i
 - Do not write or change code. Only write the document this run owns (plus the after-approval steps listed below).
 - Mode from the input:
   - `all` anywhere in the input → **Rauxa mode** for that scope (`project all`, `<slug> all`): follow `${CLAUDE_PLUGIN_ROOT}/references/rauxa.md`.
+  - `colla` (optionally followed by epic slugs) → **Colla mode**: follow `${CLAUDE_PLUGIN_ROOT}/references/colla.md`. It writes no documents; it only creates branches and worktrees, after my yes.
   - `project` (optionally followed by a document name) → **Project mode**.
   - `light <description>` → **Light mode**.
   - `<slug> design` → **Design**.
@@ -42,7 +43,7 @@ Requires `product.md` approved; if it is missing or `draft`, stop and point to `
 1. **`architecture.md`.** Inputs: `product.md`, my stack defaults (`~/.claude/seny/stack.md`, else `${CLAUDE_PLUGIN_ROOT}/templates/stack.example.md`). Full interview: every hard-to-reverse choice is asked. Write stack, structure, data and state, data model, boundaries, conventions, key decisions. App-wide only.
    After approval: fill the placeholders of the project rules that the architecture now answers (Project, Stack, Commands with the planned scripts, Product rules from `product.md`). Show me the lines before writing them.
 2. **`design-system.md`**, if the product has UI. Ask whether to write it now. No → set `Design system: declined on <YYYY-MM-DD>` in `architecture.md` and move on. No UI → `not applicable (no UI)`. Yes → load the design skills that match the stack, if installed (`frontend-design`, `web-design-guidelines`, `vercel-react-native-skills`; if none, continue and tell me which would help), give me two visual directions in 3 lines each and a recommendation, wait for my choice, then write it. After approval: set `Design system: design-system.md` in `architecture.md`.
-3. **`roadmap.md`.** Inputs: `product.md`, `architecture.md`. Split the MVP into **epics**: each one a deliverable capability (or a technical block like `foundation` or `launch`) that fits one branch and one pull request. Give each a type, a **size** (S 1–3 stories, M 4–8, L more than 8, and split anything that would be L unless it can't be split), a one-line goal and dependencies. `foundation` is always first. Ask me about the order and the sizes. Under `## Epic notes`, give each epic up to 3 lines: the decisions `product.md` already took about it and pointers to its detail, so its plan doesn't have to read everything again.
+3. **`roadmap.md`.** Inputs: `product.md`, `architecture.md`. Split the MVP into **epics**: each one a deliverable capability (or a technical block like `foundation` or `launch`) that fits one branch and one pull request. Give each a type, a **size** (S 1–3 stories, M 4–8, L more than 8, and split anything that would be L unless it can't be split), a one-line goal and dependencies. There is no status column: the state derives each epic's status from its plan. Keep dependencies honest: epics that only depend on what's done can run in parallel (Colla mode). `foundation` is always first. Ask me about the order and the sizes. Under `## Epic notes`, give each epic up to 3 lines: the decisions `product.md` already took about it and pointers to its detail, so its plan doesn't have to read everything again.
 4. **`epics/foundation/plan.md`**, in two passes like any size-L plan (see Epic mode). `Research: ../../project/product.md`. Foundation leaves the base running and deployed with nothing product-specific: scaffold, strict types, lint/typecheck/test wired, the theme from the design system, base layout or navigation, CI if wanted, a placeholder deploy. Its last story records `<docs>/project/baseline.md` with every check green (`By: foundation`). Its scope lists capabilities, not the stack again: that lives in `architecture.md`.
 
 When the foundation plan is approved: "Planning is done." Next: `/clear`, then `/seny:implement next`.
@@ -62,7 +63,7 @@ Requires `codebase.md` and `architecture.md` approved. Only `roadmap.md`: the ep
 3. Write the plan (format: `templates/epic/plan.md`). Stories are a flat list `S1…Sn`. Every story gets a `Verify:` line, and every non-trivial one an `Approach:` anchored to the code (`file:line`, symbols), so `/seny:implement` can start in a fresh session without exploring again. If the epic touches an area **In transition**, plan it with the target pattern and say whether it should wait for the evolution or go first.
 4. App-wide changes (a new shared entity, service, token or base component): list them in the plan and ask whether to update `architecture.md` or `design-system.md`; update them only after a yes.
 5. If the story count doesn't fit the size, say so and propose resizing the roadmap row or splitting the epic.
-6. After approval: set the roadmap row to `in-progress` (add the row if it isn't listed). Next: if the epic has UI (new screens, components or a visible change) and no approved `design.md`, `/seny:plan <slug> design`; otherwise "Planning is done for this epic. Next: `/clear`, then `/seny:implement next`."
+6. After approval: if the epic isn't on the roadmap, add its row (on the default branch; its status is derived from the plan, never edited). Next: if the epic has UI (new screens, components or a visible change) and no approved `design.md`, `/seny:plan <slug> design`; otherwise "Planning is done for this epic. Next: `/clear`, then `/seny:implement next`."
 
 ## Design → `<docs>/epics/<slug>/design.md`
 Requires the plan approved. Load the design skills that match the stack, as in Project mode. Start from `design-system.md` and the existing theme and components: they win over anything new. Use any reference I give (Figma through a connected tool, screenshots, sites). If the visual direction is open (no design system yet), give me two options in 3 lines each and a recommendation, and wait. Write only the sections the epic needs. New tokens or base components other epics will reuse are proposed for `design-system.md` and written only after my yes.

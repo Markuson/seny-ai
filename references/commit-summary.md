@@ -48,8 +48,10 @@ Commit: docs: <add | update> <document> for <project or epic>
 
 A Rauxa batch lists one `Decides` block per document, then one commit for the whole batch.
 
+The commit message always follows `${CLAUDE_PLUGIN_ROOT}/references/commits.md`.
+
 ## Answers
-- `C` → commit following the message (respect my commit rule: if I said not to commit in this session, show the summary and stop).
+- `C` → commit with that message (if I said not to commit in this session, show the summary and stop).
 - `E` → ask for the new message, then commit.
 - `N` → don't commit; remind me that `/seny:help summary` shows this again.
 - Never push.

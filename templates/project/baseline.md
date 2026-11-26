@@ -1,6 +1,6 @@
 # baseline.md
 
-Format for `<docs>/project/baseline.md`: the state of the project's checks before a change, so that only **new** failures block. Small on purpose: implement, fix and the reviewer read it on every story.
+Format for `<docs>/project/baseline.md`, and for `<docs>/epics/<slug>/baseline.md` when it is recorded on an epic's branch (each epic keeps its own, so epics in parallel never conflict): the state of the project's checks before a change, so that only **new** failures block. Small on purpose: implement, fix and the reviewer read it on every story.
 
 Never edit it by hand. It is recorded by running the checks:
 - `/seny:research project` (existing code) records the first one.

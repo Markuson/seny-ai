@@ -22,7 +22,7 @@ Notes: $ARGUMENTS
 1. **Detect**, read-only:
    - Instructions already there: `CLAUDE.md` (root and nested), `AGENTS.md`, `.claude/`, `README.md`, `CONTRIBUTING.md`, architecture decision records (`docs/adr/`, `docs/decisions/`).
    - Stack and commands: `package.json` (all of them in a monorepo: `pnpm-workspace.yaml`, `turbo.json`, `apps/*`, `packages/*`), scripts for dev, lint, typecheck, test, e2e, build; the lockfile.
-   - Repo conventions: commit style from `git log --oneline -30`, branch naming from `git branch -a`, `.github/pull_request_template.md`, `.github/workflows/`.
+   - Repo conventions: commit style from `git log --oneline -30` (a convention only if most commits follow one pattern), branch naming from `git branch -a`, `.github/pull_request_template.md`, `.github/workflows/`.
    - New project or existing one: application code or not.
 2. **Ask**, in one batch:
    - Where Seny's docs live:
@@ -31,6 +31,7 @@ Notes: $ARGUMENTS
    - Package manager, only if the lockfile doesn't match the one preferred in my personal rules (`~/.claude/CLAUDE.md`): keep the project's one for this repo (recommended in someone else's repo), or plan a migration later.
    - Confirm what you detected: stack, commands, commit and branch conventions. The repo's conventions override my personal ones.
    - In a monorepo whose packages have different stacks: whether to add a `CLAUDE.md` per package.
+   - Commits: the convention you detected (with 2 real examples), or, if there is none, Seny's format (`${CLAUDE_PLUGIN_ROOT}/references/commits.md`: `feature: show streak badge on habit card (streaks S3)`). Whatever I confirm is written under Repo conventions → Commits and used for every commit.
    - Review mode: `auto` (recommended: `/seny:implement` runs the independent reviewer itself and fixes blockers once; you still decide `done`) or `manual` (you run `/seny:review`).
 3. **Write**, after my answers:
    - **Shared mode**:
@@ -42,7 +43,7 @@ Notes: $ARGUMENTS
      - Write the filled template to `.seny/CLAUDE.md`.
      - Make Claude Code load it in every session: add the line `@.seny/CLAUDE.md` to `CLAUDE.local.md` at the repo root (create it if missing; if it exists, show me the line before appending).
      - Append `.seny/` and `CLAUDE.local.md` to `.git/info/exclude`. Nothing tracked changes.
-   - Either way, the file with the Seny rules gets the lines `- Seny docs: \`<docs root>\`` and `- Seny review: <auto | manual>`.
+   - Either way, the file with the Seny rules gets the lines `- Seny docs: \`<docs root>\``, `- Seny review: <auto | manual>` and `- Seny parallel: suggest · max 2` (Colla mode for epics; `off` to never suggest it).
    - Monorepo, if I said yes: a short `CLAUDE.md` per package with its stack and commands (shared mode only).
 4. **Permissions**: propose the detected check commands for `.claude/settings.local.json` → `permissions.allow`, so lint, typecheck, tests and build run without a prompt, e.g. `Bash(pnpm lint)`, `Bash(pnpm typecheck)`, `Bash(pnpm test)`, `Bash(pnpm test *)`, `Bash(pnpm build)`. Only checks: never dev servers, deploy, release, e2e or install scripts. Merge with the existing file, never replace it, and show me the result before writing. Then check it is ignored by git (`git check-ignore .claude/settings.local.json`); if not, append it to `.git/info/exclude`.
 5. **Personal defaults**: if `~/.claude/CLAUDE.md` doesn't exist, offer to copy `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.personal.example.md` there as a starting point I'll edit. If `~/.claude/seny/stack.md` doesn't exist, offer the same with `${CLAUDE_PLUGIN_ROOT}/templates/stack.example.md` (stack choices for new apps, read only by `/seny:plan project`). Never touch files that exist.

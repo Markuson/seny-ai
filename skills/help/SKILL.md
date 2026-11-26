@@ -30,7 +30,7 @@ Three levels: the **project** (`<docs>/project/`: `product.md`, `codebase.md`, `
 
 Epic sizes: **S** (1–3 stories) `/seny:plan <slug>` · **M** (4–8) `/seny:research <slug>` → `/seny:plan <slug>` · **L** (more) research, then the plan in two passes · plus `/seny:plan <slug> design` with UI.
 
-Commands: `/seny:init` · `/seny:research project [<idea> | refresh | <document> | all]` · `/seny:research <epic> [all]` · `/seny:spike <question>` · `/seny:plan project [<document> | all]` · `/seny:plan <slug> [all | design | <change>]` · `/seny:plan light <change>` · `/seny:implement [<slug>] <S#> | next [no-review]` · `/seny:review [<slug>] [<S#>] [done | range]` · `/seny:fix <bug>` · `/seny:evolve <change>`.
+Commands: `/seny:init` · `/seny:research project [<idea> | refresh | <document> | all]` · `/seny:research <epic> [all]` · `/seny:spike <question>` · `/seny:plan project [<document> | all]` · `/seny:plan <slug> [all | design | <change>]` · `/seny:plan light <change>` · `/seny:plan colla [<slugs>]` · `/seny:implement [<slug>] <S#> | next [no-review]` · `/seny:review [<slug>] [<S#>] [done | range]` · `/seny:fix <bug>` · `/seny:evolve <change>`.
 
 ## Pick the mode
 - Empty, or "where are we" / "dónde estamos" / "status" / "what next" in any words → **Where you are**.
@@ -50,7 +50,7 @@ Find the next step with the first rule that applies:
 8. An approved plan with UI stories and no approved `design.md` → `/seny:plan <slug> design`.
 9. `todo` stories ready → `/seny:implement next` (name the story).
 10. `todo` stories all blocked → say which dependency blocks them.
-11. Epic finished → the next ready roadmap row: evolution → `/seny:evolve <slug>`; S → `/seny:plan <slug>`; M or L → `/seny:research <slug>`. Remind me of uncommitted changes and the PR (I push).
+11. Epic finished → the next ready roadmap row: evolution → `/seny:evolve <slug>`; S → `/seny:plan <slug>`; M or L → `/seny:research <slug>`. Remind me of uncommitted changes and the PR (I push). If the state shows `Parallel:`, offer Colla mode as an option: `/seny:plan colla`.
 12. Nothing in progress and no roadmap → ask what I want to do.
 
 Answer in this shape:
@@ -68,10 +68,10 @@ Next (recommended)
 What I can help with now
   [1] <the next step> (recommended)
   [2] Summary of <the last thing done>
-  [3..] <only what fits now: see the roadmap and what's after this epic · change this plan · resume a draft · a stale baseline note · something blocked>
+  [3..] <only what fits now: work on several epics in parallel (when the state shows `Parallel:`) → `/seny:plan colla` · see the roadmap and what's after this epic · change this plan · resume a draft · a stale baseline note · something blocked>
   [n] Something else: a bug, an idea, a question
 ```
-Add **Watch out** lines only if something needs attention (uncommitted changes on the default branch, a draft something depends on, a stale baseline, docs that contradict the code, open **In transition** rows, a lockfile that doesn't match the project rules). Several epics in progress → one line each, and an option per epic.
+Add **Watch out** lines only if something needs attention (uncommitted changes on the default branch, a draft something depends on, a stale baseline, docs that contradict the code, open **In transition** rows, a lockfile that doesn't match the project rules). Several epics in progress → one line each, and an option per epic. Other worktrees in the state → one line each ("about — in ../marcuson.dev-about"): their progress isn't visible here until merged.
 
 ## Summary
 Rebuild the commit summary of a story, a fix or a document, exactly in the format of `${CLAUDE_PLUGIN_ROOT}/references/commit-summary.md`, from what is on disk: the plan and its review record; the diff if it isn't committed yet (`git diff HEAD --stat`, `git status`); the commit if it is (`git log` to find it by story id or document name, `git show --stat`). Leave the `[C] [E] [N]` menu out if it is already committed; say which commit it is instead.

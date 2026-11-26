@@ -8,6 +8,7 @@ How Seny thinks, one idea at a time. If you only read one page after the README,
 - [One document at a time](#one-document-at-a-time)
 - [Rauxa mode](#rauxa-mode)
 - [Quick answers and commit summaries](#quick-answers-and-commit-summaries)
+- [Working in parallel (Colla mode)](#working-in-parallel-colla-mode)
 - [The documents](#the-documents)
 - [Anatomy of a story](#anatomy-of-a-story)
 - [Statuses and who moves them](#statuses-and-who-moves-them)
@@ -205,6 +206,33 @@ Lost it in the conversation, or after a `/clear`? `/seny:help summary` rebuilds 
 
 ---
 
+## Working in parallel (Colla mode)
+
+A *colla* is the team that raises a castell: many people at once, each in their place. Inside an epic, stories usually build on each other, so the real room for parallel work is **between epics**: once `i18n` is done, `about`, `projects` and `contact` may only depend on it, and all three can move at once.
+
+When that happens, the state shows a line like this:
+
+```
+Parallel: 3 epics ready to start at once (about projects contact) · max 2 at a time
+```
+
+and Seny offers Colla mode when you close an epic and in `/seny:help` (or ask for it with `/seny:plan colla`). It then:
+
+1. Lets you pick which epics, up to the `max` in your project rules, and warns if two of them are likely to touch the same areas.
+2. Creates a branch and a **git worktree** for each one beside your repo (`../marcuson.dev-about`), after your yes.
+3. Gives you, per epic, the command to open a Claude Code session there and the first Seny command to run in it (`/seny:plan` for size S, `/seny:research` for M and L).
+
+Each session then works exactly like normal Seny: interviews, reviews, your "done". Planning needs your answers, so Seny prepares the sessions instead of running them in the background. Each epic ends in its own pull request; after merging, its worktree is removed.
+
+Two things keep parallel epics from stepping on each other:
+
+- **The roadmap has no status column.** Each epic's status comes from its plan (`todo` without a folder, `done` when all its stories are, `in-progress` otherwise), so branches never edit the same lines of `roadmap.md`.
+- **Each epic branch keeps its own baseline**, in `docs/epics/<slug>/baseline.md`, so re-recording it in one branch never conflicts with another.
+
+Running stories of one epic in parallel is planned for a later version.
+
+---
+
 ## The documents
 
 ### Project documents (`docs/project/`)
@@ -213,10 +241,10 @@ Lost it in the conversation, or after a `/clear`? `/seny:help summary` rebuilds 
 |---|---|---|---|
 | `product.md` | Vision, users, core needs, MVP, constraints (new apps) | `/seny:research project <idea>` | plan, epic research and plans |
 | `codebase.md` | The existing code as it is: conventions in practice, test coverage map, tech debt with `file:line`, fragile areas | `/seny:research project` (existing code), `refresh` | research, plan, evolve, fix |
-| `baseline.md` | Which checks already failed, with commands and the commit | research (existing code), the last foundation story, implement and fix when it's stale | implement, fix, reviewer |
+| `baseline.md` | Which checks already failed, with commands and the commit (an epic branch may keep its own in `docs/epics/<slug>/`) | research (existing code), the last foundation story, implement and fix when it's stale | implement, fix, reviewer |
 | `architecture.md` | Stack, structure, data and state, data model, boundaries, conventions, areas **In transition**, key decisions | plan project, research (existing code); updated after your yes | everyone who writes code |
 | `design-system.md` | Direction, tokens, typography, spacing, motion, base components, accessibility rules | plan project (new apps), research (existing UI) | design, implement, reviewer |
-| `roadmap.md` | Epics and evolutions in order, each with a type, size, goal, dependencies and status, plus up to three lines of **epic notes** each (decisions already taken, pointers to detail) | plan project, plan, evolve, review | help, and every epic's plan |
+| `roadmap.md` | Epics and evolutions in order, each with a type, size, goal and dependencies (their status is derived from each plan), plus up to three lines of **epic notes** each (decisions already taken, pointers to detail) | plan project, plan, evolve, review | help, and every epic's plan |
 | `inputs/` | Reference material kept out of the documents: inventories, briefs, content. No status, never loaded by default | research, plan | whoever follows a link to it |
 
 ### Epic documents (`docs/epics/<slug>/`)
@@ -286,9 +314,9 @@ Under a story, the review loop appends its records:
 | `review` → `in-progress` | the review loop | The reviewer requested changes, or you want a `should` fixed first |
 | `review` → `done` | **you**, through the review loop or `/seny:review <id> done` | The reviewer approved and you checked it by hand |
 
-Epics have their own status in `roadmap.md`: `todo` → `in-progress` (when its plan is approved) → `done` (when every story is done). Documents have theirs: `draft` → `approved` (and `shape approved` in between for two-pass plans).
+Epics have a status too, derived from their plan and shown by the state: `todo` (no folder yet) → `in-progress` → `done` (every story done). Nobody edits it by hand. Documents have theirs: `draft` → `approved` (and `shape approved` in between for two-pass plans).
 
-When a story becomes `done`, Seny proposes a commit with the story id in it, following your commit rule: it commits if you told it to, doesn't if you told it not to, and asks otherwise. When the whole epic is done, it also proposes the PR title and body from the plan: one epic, one pull request. Pushing is always yours.
+When a story becomes `done`, Seny shows the commit summary with a message in a [fixed format](configuration.md#commits) (`feature: show streak badge on habit card (streaks S3)`) and commits on your `[C]`, or automatically if you told it to for the session. When the whole epic is done, it also proposes the PR title and body from the plan: one epic, one pull request. Pushing is always yours.
 
 ---
 
@@ -518,4 +546,6 @@ Long sessions get expensive and forgetful. Seny's habits:
 | **Inputs** | `docs/project/inputs/`: reference material kept out of the documents and read only on demand. |
 | **Rauxa mode** | Writing several planning documents in one run, with one interview and one review. Opt-in, `[R]` or `all`. |
 | **Commit summary** | What changed, the review and what you should check, printed before every commit and rebuildable with `/seny:help summary`. |
+| **Colla mode** | Working on several ready epics at once, each on its own branch, worktree and Claude Code session. |
+| **Worktree** | A second working folder of the same git repository, on another branch; how Colla mode keeps epics apart. |
 | **Docs root** | Where Seny's documents live: `docs/` (shared) or `.seny/` (private). |
